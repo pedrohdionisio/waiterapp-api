@@ -20,20 +20,23 @@
 		"enabled": true,
 		"rules": {
 			"recommended": true,
-      "suspicious": {
-        "noConsole": "warn"
-      }
+			"suspicious": {
+				"noConsole": "warn"
+			},
+			"correctness": {
+				"noUnusedVariables": "error"
+			}
 		}
 	},
 	"javascript": {
 		"formatter": {
-			"arrowParentheses":"always",
-      "bracketSameLine": false,
-      "bracketSpacing": true,
-      "jsxQuoteStyle": "single",
-      "quoteProperties": "asNeeded",
-      "semicolons": "always",
-      "trailingCommas": "none"
+			"arrowParentheses": "always",
+			"bracketSameLine": false,
+			"bracketSpacing": true,
+			"jsxQuoteStyle": "single",
+			"quoteProperties": "asNeeded",
+			"semicolons": "always",
+			"trailingCommas": "none"
 		}
 	}
 }
