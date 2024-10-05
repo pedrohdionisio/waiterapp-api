@@ -1,0 +1,78 @@
+service: waiterapp
+frameworkVersion: "4"
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  region: us-east-1
+  runtime: nodejs20.x
+  deploymentMethod: direct
+  architecture: arm64
+  environment:
+    COGNITO_CLIENT_ID: !Ref WaiterAppUserPoolClient
+
+custom:
+  bundle: true
+  minify: true
+  sourcemap: false
+  target: node20
+  exclude:
+    - "@aws-sdk/*"
+  define:
+    require.resolve: undefined
+  platform: node
+  concurrency: 10
+
+resources:
+  Resources:
+    WaiterAppUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: WaiterAppUserPool
+        MfaConfiguration: OFF
+        AutoVerifiedAttributes:
+          - email
+        AdminCreateUserConfig:
+          AllowAdminCreateUserOnly: true
+        UsernameAttributes:
+          - email
+        AccountRecoverySetting:
+          RecoveryMechanisms:
+            - Name: "verified_email"
+              Priority: 1
+        Policies:
+          PasswordPolicy:
+            MinimumLength: 8
+            RequireLowercase: false
+            RequireNumbers: false
+            RequireSymbols: false
+            RequireUppercase: false
+            TemporaryPasswordValidityDays: 7
+        Schema:
+          - Name: name
+            Mutable: true
+            Required: true
+            AttributeDataType: String
+    WaiterAppUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: WaiterAppUserPoolClient
+        UserPoolId: !Ref WaiterAppUserPool
+        ExplicitAuthFlows:
+          - ALLOW_USER_PASSWORD_AUTH
+          - ALLOW_REFRESH_TOKEN_AUTH
+        TokenValidityUnits:
+          AccessToken: hours
+          RefreshToken: hours
+        AccessTokenValidity: 3
+        RefreshTokenValidity: 168 # 7 days
+
+functions:
+  signUp:
+    handler: src/server/functions/signUp.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /auth/sign-up
