@@ -1,3 +1,3 @@
 const test = {};
 
-console.log("");
+console.log("asasa");
