@@ -6,7 +6,9 @@
 	"scripts": {
 		"prepare": "husky"
 	},
-	"dependencies": {},
+	"dependencies": {
+		"@aws-sdk/client-cognito-identity-provider": "^3.665.0"
+	},
 	"devDependencies": {
 		"@biomejs/biome": "1.9.3",
 		"@types/aws-lambda": "^8.10.134",

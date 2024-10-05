@@ -33,7 +33,8 @@
 			"jsxQuoteStyle": "single",
 			"quoteProperties": "asNeeded",
 			"semicolons": "always",
-			"trailingCommas": "none"
+			"trailingCommas": "none",
+			"quoteStyle": "single"
 		}
 	}
 }

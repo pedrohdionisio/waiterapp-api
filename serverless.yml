@@ -70,9 +70,9 @@ resources:
         RefreshTokenValidity: 168 # 7 days
 
 functions:
-  signUp:
-    handler: src/server/functions/signUp.handler
+  signIn:
+    handler: src/server/functions/signIn.handler
     events:
       - httpApi:
           method: POST
-          path: /auth/sign-up
+          path: /auth/sign-in
