@@ -35,7 +35,7 @@ resources:
         AutoVerifiedAttributes:
           - email
         AdminCreateUserConfig:
-          AllowAdminCreateUserOnly: true
+          AllowAdminCreateUserOnly: false
         UsernameAttributes:
           - email
         AccountRecoverySetting:
@@ -54,6 +54,10 @@ resources:
           - Name: name
             Mutable: true
             Required: true
+            AttributeDataType: String
+          - Name: role
+            Mutable: true
+            Required: false
             AttributeDataType: String
     WaiterAppUserPoolClient:
       Type: AWS::Cognito::UserPoolClient
