@@ -16,7 +16,17 @@ export interface IConfirmAccountDTO {
 	code: string;
 }
 
+export interface ILoginDto {
+	email: string;
+	password: string;
+}
+
+export interface ILoginReturn {
+	accessToken?: string;
+	refreshToken?: string;
+}
 export interface IAuthRepository {
 	create(dto: ICreateUserDTO): Promise<ICreateUserReturn>;
 	confirmAccount(dto: IConfirmAccountDTO): Promise<void>;
+	login(dto: ILoginDto): Promise<ILoginReturn>;
 }

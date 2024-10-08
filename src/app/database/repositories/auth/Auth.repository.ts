@@ -1,13 +1,16 @@
 import {
 	type CognitoIdentityProviderClient,
 	ConfirmSignUpCommand,
+	InitiateAuthCommand,
 	SignUpCommand
 } from '@aws-sdk/client-cognito-identity-provider';
 import type {
 	IAuthRepository,
 	IConfirmAccountDTO,
 	ICreateUserDTO,
-	ICreateUserReturn
+	ICreateUserReturn,
+	ILoginDto,
+	ILoginReturn
 } from './AuthRepository.types';
 
 export class AuthRepository implements IAuthRepository {
@@ -45,5 +48,23 @@ export class AuthRepository implements IAuthRepository {
 		});
 
 		await this.cognitoClient.send(command);
+	}
+
+	async login(dto: ILoginDto): Promise<ILoginReturn> {
+		const command = new InitiateAuthCommand({
+			ClientId: process.env.COGNITO_CLIENT_ID,
+			AuthFlow: 'USER_PASSWORD_AUTH',
+			AuthParameters: {
+				USERNAME: dto.email,
+				PASSWORD: dto.password
+			}
+		});
+
+		const { AuthenticationResult } = await this.cognitoClient.send(command);
+
+		return {
+			accessToken: AuthenticationResult?.AccessToken,
+			refreshToken: AuthenticationResult?.RefreshToken
+		};
 	}
 }
