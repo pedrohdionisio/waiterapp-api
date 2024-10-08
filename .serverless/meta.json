@@ -33,17 +33,17 @@
 				"versionFunctions": true,
 				"remoteFunctionData": {
 					"Configuration": {
-						"FunctionName": "waiterapp-dev-signUp",
-						"FunctionArn": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-signUp",
+						"FunctionName": "waiterapp-dev-accountConfirmation",
+						"FunctionArn": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-accountConfirmation",
 						"Runtime": "nodejs20.x",
 						"Role": "arn:aws:iam::356975246949:role/waiterapp-dev-us-east-1-lambdaRole",
-						"Handler": "src/server/functions/auth/signUp.handler",
-						"CodeSize": 79837,
+						"Handler": "src/server/functions/auth/accountConfirmation.handler",
+						"CodeSize": 80514,
 						"Description": "",
 						"Timeout": 6,
 						"MemorySize": 1024,
-						"LastModified": "2024-10-07T00:07:53.000+0000",
-						"CodeSha256": "ZFhrGvvFNK6i7YgqrKThulaKP/ijEJZVhJ9xBhtZPrs=",
+						"LastModified": "2024-10-08T00:36:52.000+0000",
+						"CodeSha256": "3m1WZpGoUOIi78+Pw7/9rfyf8gfJxvPIxF10Cgy3cBU=",
 						"Version": "$LATEST",
 						"Environment": {
 							"Variables": {
@@ -56,7 +56,7 @@
 							"Mode": "PassThrough"
 						},
 						"MasterArn": null,
-						"RevisionId": "87afa666-7c71-4005-bc5a-7003f6acd4d5",
+						"RevisionId": "710be028-4530-4c64-ba31-a3631a171fd8",
 						"State": "Active",
 						"StateReason": null,
 						"StateReasonCode": null,
@@ -81,13 +81,13 @@
 							"LogFormat": "Text",
 							"ApplicationLogLevel": null,
 							"SystemLogLevel": null,
-							"LogGroup": "/aws/lambda/waiterapp-dev-signUp"
+							"LogGroup": "/aws/lambda/waiterapp-dev-accountConfirmation"
 						},
 						"Layers": []
 					},
 					"Code": {
 						"RepositoryType": "S3",
-						"Location": "https://prod-iad-c1-djusa-tasks.s3.us-east-1.amazonaws.com/snapshots/356975246949/waiterapp-dev-signUp-173c2c54-0de1-4729-be44-2843ecab450d?versionId=tlwGYZdXv9qy1pmODY7ABnOl8bmebZjY&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEMf%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQCSqREtU6NcU7%2F7kmsSfwtUK4Z1AHi2yBQ9IeFOhJfi1AIhAKglZGCMZM%2BTUmFvFVqJ%2Bs76jhFAMj5nZZHNHJky4vTuKrkFCCAQBBoMNDc5MjMzMDI1Mzc5IgzHTdLVlLxeWlLyQ8IqlgUwpOQvqq0HE76PMjpx%2BTMnbqCVqi3VmA1unGWlBpOQ0SIb3RprmOtr0TFGT8mXQRrk31psRFn%2B6BdJmhYbsGNXpO3HUgfkMIzEPdtZQz5LYlTdMgNMZG%2FRIUONq35mMNrrikKXMnEb5YoCGuiMcSkstM2YzetYGrKGPNzH8eFE0VBGY6aD8uneKfTGASKZjhTmQbE7DGuk5nZUU6MwI0SSafZleVCY7WSj6p81SUD4iuKJZiV0bER5VUxslaJSvcqyFRzZIC%2BBltnS%2B3swyEulodpe5xQmdR0xMSxbG7DeIDsUTxWWtdv7Qxsar6RJ%2B4AvL4etfQjd1IvykWqGR4wCqyi9Qo6%2Fv6xNjedpU2ZTmbqHlcjcyrQ9DiJAHmu5cc7eFyLLMPfB0b0BX2zw7Wb0DmJLjz487LOt5QUzQ2rpr1bEZjzkrHwnj7haBYI%2FjXH4Gjr9DNH1TMV8p%2FG31bpFXbAaRVoB0vEYZA9jTtD%2B0F2L%2FDt5S%2F2YeL9SY7m6xMMzxvP2gXZGyGSrV%2BtPe7C%2BJrgc3wsmESTCMROMq0pzQr4lOZ3nRws9pToxrVH9r1%2FiacHODezX7o%2BFjK7hMp4p8sjB%2FEUzjoQL%2FRkRzLnAGr7ige2phs%2FYrixxrL1KhU2BadqcvVEoi4Zobz1Z%2Bg5QQlhLd40XJigOSc0I47ihnbvslfEfy9ME6OlTuShzxZxchLOCX9yKCe5dvK96HLM%2Fu5KmzuYf3B2PPGtlNzm8%2FLwhQEKqzz3xp9FqFALZY%2FKopetJzt9SJPx%2BuNxwWEDErYq32nvthDtGI37qOCdoZYaBHWTyQ%2Bzxyznvo7lAyq8GY139pHyfM%2F0SfYXvNHACf5HVjfNJvFguZbT0z4%2FF%2BeJZiaAfDTCMqoy4BjqwAeBZ79ULEZIa85LZEyLdHf9RgOVPgB5Mjzb92X4iLwT1wnrB3SSrDYqbzFDosjfcRpcTNw3GdHkU5frbLXXu5Fd%2BtEauTcH4DaDOGTdqSkkuB3c24u2FK8ZlD%2FwsJ1FoXlGQRzSHF2%2F1CJM4pAKTs9Q1D7BYGvIiHP893%2Fe7pIeLJhbUzeuIWN6MEcWqBuZT9UoYeKJWlJyUqpj%2BQN3QgfPkvGwy4NuZ0zOLbxaybboo&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241007T000816Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIAW7FEDUVR7NHWF5CM%2F20241007%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=d520fc2021121059ade1f78389e9066131dda11d21eccfc1a8a17d16038a413f",
+						"Location": "https://prod-iad-c1-djusa-tasks.s3.us-east-1.amazonaws.com/snapshots/356975246949/waiterapp-dev-accountConfirmation-6da6ffe7-c86e-4a51-88ea-4245ab9ae8ac?versionId=qAD6zEcnAUA7SHnKG2kucM464EqxhGY9&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOD%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJGMEQCIGo6IwG8mMrj%2BPkKcTfNNnxYM%2FTXdEe1BlXahe0wYp%2FqAiBfgOfEK4FC4OF6AOH8BJ49073omCOMRxBrrQBntCqgrSq7BQg5EAQaDDQ3OTIzMzAyNTM3OSIMB3O0T7N5UGpRvhYHKpgFN0EPfdiLg2s5ipFJl4ZPJ%2Fe2ytd1HlNTqryHJ7fqnRWTo30fYSk1wthaX30H53WOiwDAnHHffLL%2FQxYKtQonZy7EfoZEqVtkNgaLbTLSlYk6iL4HZ1A1eAOAskjLyjjBtbIX7fOJm6Qs3jl47eNE67s8FsqdBYLWrCg400jdsl2I6TJ7TuHhW3zbaaE4KsJzkOdIyvx9%2FViCL60xaEijEl7W%2BNHNxn2CoQ0757K9j7huSDF1fjLm1AvF%2BOYSezmbu73qutExwpBuZrlMyomGDC%2BDcrwYalIRdRi%2BoT2cgRuIP10JJeUd%2Fyi596SRYOCp29l91RcTfUDrQo18XvvSF8Ok%2Feblv%2FyaPM6PQOFK%2FDse8zTZ%2BjhqYhzqbtKpRmeVREWrwFbUw4XqcabvLjjjUVxDPpFHBv7p2GdPhBSqsUsubrOl8fslhFCzIvt7a%2BY7ZwalJZfLdsCRA5AriwYWhNK91FxZs0IHIjUgMzjQoZKRAkYzfPvsdPqm5ls%2BTvR0CVvw8q7Lfvb8to0DD5T%2B6cbZcK3jHu0yrvU9Z5UzxZeuZuNvucnUBfAFp1eRdHX9uac7%2FQxFQre8aSz6PsFWnazda1nnRbaXNqx3glrW6UaL7vG4x9qeluT1mkQ6xy54lQiecMNEWxXB1PUf%2BQitBrwCvWGSM44h2ux7l%2BNXYV433jigOHfRWonQ9fiZB%2B3cCzez89uAVodh1AdgY5HthTtDZqXCmMflCr37QZYS8NoMCIbmFhFOTVmTjbvsGm37wgIPz9mVLVDpOvuBS%2FeNr27LuI8YnL9P1Qocl7e1a%2FDrDUcyY%2BrCAChJH3OOlPbGzzcRD79xHSYhb3e9L2v1JRxIinAoGJgEm4InNvr%2BikZ1XOuI0xkTljCo4JG4BjqyARxzeMZrzQm6jD%2Bxn%2BijdBuoN9K0D9K3wm%2Bb4Ttx1AmMaKnPFpwGi7pXF3IYptX0wIMExNp4Kx1Nra%2Bvoft4htADMiEbxWOD5ryz3HXu5d%2FS63pNQvgjmNAORlXKmVy1B%2FYNoIlODYAry6LFNiQG02C3dNj7%2BcJThjEv3MqsRaKJ1NY4vKiKy4fK5wIisOfV0WYbT1qgtwCn33QvqVg%2FI0h57FlwzpOX8M8M5zOMyAzyRP4%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241008T004010Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIAW7FEDUVRXUNWPBOA%2F20241008%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=2d5e39ff882cd1eb4d1fa02ef21280bdb7780b4ced32f08e25fecd17448e3d37",
 						"ImageUri": null,
 						"ResolvedImageUri": null
 					},
@@ -95,7 +95,7 @@
 						"aws:cloudformation:stack-name": "waiterapp-dev",
 						"aws:cloudformation:stack-id": "arn:aws:cloudformation:us-east-1:356975246949:stack/waiterapp-dev/b54ebdd0-843e-11ef-92b9-0affca4126ff",
 						"STAGE": "dev",
-						"aws:cloudformation:logical-id": "SignUpLambdaFunction"
+						"aws:cloudformation:logical-id": "AccountConfirmationLambdaFunction"
 					}
 				}
 			},
@@ -179,24 +179,36 @@
 							}
 						}
 					],
-					"name": "waiterapp-dev-signUp",
+					"name": "waiterapp-dev-signUp"
+				},
+				"accountConfirmation": {
+					"handler": "src/server/functions/auth/accountConfirmation.handler",
+					"events": [
+						{
+							"httpApi": {
+								"method": "POST",
+								"path": "/auth/account-confirmation"
+							}
+						}
+					],
+					"name": "waiterapp-dev-accountConfirmation",
 					"environment": {
 						"NODE_OPTIONS": "--enable-source-maps"
 					},
 					"package": {
-						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-signUp.zip"
+						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-accountConfirmation.zip"
 					}
 				}
 			}
 		},
-		"serviceRawFile": "service: waiterapp\nframeworkVersion: \"4\"\n\npackage:\n  individually: true\n\nprovider:\n  name: aws\n  region: us-east-1\n  runtime: nodejs20.x\n  deploymentMethod: direct\n  architecture: arm64\n  environment:\n    COGNITO_CLIENT_ID: !Ref WaiterAppUserPoolClient\n\ncustom:\n  bundle: true\n  minify: true\n  sourcemap: false\n  target: node20\n  exclude:\n    - \"@aws-sdk/*\"\n  define:\n    require.resolve: undefined\n  platform: node\n  concurrency: 10\n\nresources:\n  Resources:\n    WaiterAppUserPool:\n      Type: AWS::Cognito::UserPool\n      Properties:\n        UserPoolName: WaiterAppUserPool\n        MfaConfiguration: OFF\n        AutoVerifiedAttributes:\n          - email\n        AdminCreateUserConfig:\n          AllowAdminCreateUserOnly: false\n        UsernameAttributes:\n          - email\n        AccountRecoverySetting:\n          RecoveryMechanisms:\n            - Name: \"verified_email\"\n              Priority: 1\n        Policies:\n          PasswordPolicy:\n            MinimumLength: 8\n            RequireLowercase: false\n            RequireNumbers: false\n            RequireSymbols: false\n            RequireUppercase: false\n            TemporaryPasswordValidityDays: 7\n        Schema:\n          - Name: name\n            Mutable: true\n            Required: true\n            AttributeDataType: String\n          - Name: role\n            Mutable: true\n            Required: false\n            AttributeDataType: String\n    WaiterAppUserPoolClient:\n      Type: AWS::Cognito::UserPoolClient\n      Properties:\n        ClientName: WaiterAppUserPoolClient\n        UserPoolId: !Ref WaiterAppUserPool\n        ExplicitAuthFlows:\n          - ALLOW_USER_PASSWORD_AUTH\n          - ALLOW_REFRESH_TOKEN_AUTH\n        TokenValidityUnits:\n          AccessToken: hours\n          RefreshToken: hours\n        AccessTokenValidity: 3\n        RefreshTokenValidity: 168 # 7 days\n\nfunctions:\n  signUp:\n    handler: src/server/functions/auth/signUp.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/sign-up\n",
+		"serviceRawFile": "service: waiterapp\nframeworkVersion: \"4\"\n\npackage:\n  individually: true\n\nprovider:\n  name: aws\n  region: us-east-1\n  runtime: nodejs20.x\n  deploymentMethod: direct\n  architecture: arm64\n  environment:\n    COGNITO_CLIENT_ID: !Ref WaiterAppUserPoolClient\n\ncustom:\n  bundle: true\n  minify: true\n  sourcemap: false\n  target: node20\n  exclude:\n    - \"@aws-sdk/*\"\n  define:\n    require.resolve: undefined\n  platform: node\n  concurrency: 10\n\nresources:\n  Resources:\n    WaiterAppUserPool:\n      Type: AWS::Cognito::UserPool\n      Properties:\n        UserPoolName: WaiterAppUserPool\n        MfaConfiguration: OFF\n        AutoVerifiedAttributes:\n          - email\n        AdminCreateUserConfig:\n          AllowAdminCreateUserOnly: false\n        UsernameAttributes:\n          - email\n        AccountRecoverySetting:\n          RecoveryMechanisms:\n            - Name: \"verified_email\"\n              Priority: 1\n        Policies:\n          PasswordPolicy:\n            MinimumLength: 8\n            RequireLowercase: false\n            RequireNumbers: false\n            RequireSymbols: false\n            RequireUppercase: false\n            TemporaryPasswordValidityDays: 7\n        Schema:\n          - Name: name\n            Mutable: true\n            Required: true\n            AttributeDataType: String\n          - Name: role\n            Mutable: true\n            Required: false\n            AttributeDataType: String\n    WaiterAppUserPoolClient:\n      Type: AWS::Cognito::UserPoolClient\n      Properties:\n        ClientName: WaiterAppUserPoolClient\n        UserPoolId: !Ref WaiterAppUserPool\n        ExplicitAuthFlows:\n          - ALLOW_USER_PASSWORD_AUTH\n          - ALLOW_REFRESH_TOKEN_AUTH\n        TokenValidityUnits:\n          AccessToken: hours\n          RefreshToken: hours\n        AccessTokenValidity: 3\n        RefreshTokenValidity: 168 # 7 days\n\nfunctions:\n  signUp:\n    handler: src/server/functions/auth/signUp.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/sign-up\n  accountConfirmation:\n    handler: src/server/functions/auth/accountConfirmation.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/account-confirmation\n",
 		"command": ["deploy", "function"],
 		"options": {
-			"function": "signUp"
+			"function": "accountConfirmation"
 		},
 		"error": null,
 		"params": {},
-		"machineId": "0db13d26cf4cb51995a008cdee0e41f4",
+		"machineId": "7b466bbc13ca66bda40727b24db5b3d5",
 		"stage": "dev",
 		"accessKeyV2": "<REDACTED>",
 		"accessKeyV1": "<REDACTED>",
@@ -225,12 +237,18 @@
 		"serviceUniqueId": "arn:aws:cloudformation:us-east-1:356975246949:stack/waiterapp-dev/b54ebdd0-843e-11ef-92b9-0affca4126ff",
 		"serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:356975246949:stack/waiterapp-dev/b54ebdd0-843e-11ef-92b9-0affca4126ff",
 		"serviceProviderAwsCfStackCreated": "2024-10-06T23:57:13.763Z",
-		"serviceProviderAwsCfStackUpdated": "2024-10-07T00:05:25.672Z",
+		"serviceProviderAwsCfStackUpdated": "2024-10-08T00:25:29.751Z",
 		"serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
 		"serviceProviderAwsCfStackOutputs": [
 			{
+				"OutputKey": "AccountConfirmationLambdaFunctionQualifiedArn",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-accountConfirmation:1",
+				"Description": "Current Lambda function version",
+				"ExportName": "sls-waiterapp-dev-AccountConfirmationLambdaFunctionQualifiedArn"
+			},
+			{
 				"OutputKey": "SignUpLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-signUp:7",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-signUp:8",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-SignUpLambdaFunctionQualifiedArn"
 			},

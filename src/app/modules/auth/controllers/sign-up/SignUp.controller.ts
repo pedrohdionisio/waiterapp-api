@@ -27,7 +27,7 @@ export class SignUpController implements IController {
 				body: {
 					...response
 				},
-				statusCode: 200
+				statusCode: 201
 			};
 		} catch (error) {
 			if (error instanceof UsernameExistsException) {

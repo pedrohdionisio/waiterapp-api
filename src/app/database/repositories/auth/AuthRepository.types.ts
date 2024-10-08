@@ -11,6 +11,12 @@ export interface ICreateUserReturn {
 	id?: string;
 }
 
+export interface IConfirmAccountDTO {
+	email: string;
+	code: string;
+}
+
 export interface IAuthRepository {
 	create(dto: ICreateUserDTO): Promise<ICreateUserReturn>;
+	confirmAccount(dto: IConfirmAccountDTO): Promise<void>;
 }

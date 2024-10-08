@@ -1,11 +1,7 @@
-import type { UserRoleType } from '@/app/entities';
+import type { SignUpSchema } from '@/app/modules/auth/schemas';
+import type { z } from 'zod';
 
-export interface ISignUpInput {
-	name: string;
-	email: string;
-	password: string;
-	role: UserRoleType;
-}
+export type SignUpInputType = z.infer<typeof SignUpSchema>;
 
 export interface ISignUpOutput {
 	id?: string;
@@ -15,5 +11,5 @@ export interface ISignUpOutput {
 }
 
 export interface ISignUpService {
-	execute(input: ISignUpInput): Promise<ISignUpOutput>;
+	execute(input: SignUpInputType): Promise<ISignUpOutput>;
 }
