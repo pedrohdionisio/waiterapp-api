@@ -9,8 +9,10 @@ import type {
 	IConfirmAccountDTO,
 	ICreateUserDTO,
 	ICreateUserReturn,
-	ILoginDto,
-	ILoginReturn
+	ILoginDTO,
+	ILoginReturn,
+	IRefreshTokenDTO,
+	IRefreshTokenReturn
 } from './AuthRepository.types';
 
 export class AuthRepository implements IAuthRepository {
@@ -50,7 +52,7 @@ export class AuthRepository implements IAuthRepository {
 		await this.cognitoClient.send(command);
 	}
 
-	async login(dto: ILoginDto): Promise<ILoginReturn> {
+	async login(dto: ILoginDTO): Promise<ILoginReturn> {
 		const command = new InitiateAuthCommand({
 			ClientId: process.env.COGNITO_CLIENT_ID,
 			AuthFlow: 'USER_PASSWORD_AUTH',
@@ -65,6 +67,22 @@ export class AuthRepository implements IAuthRepository {
 		return {
 			accessToken: AuthenticationResult?.AccessToken,
 			refreshToken: AuthenticationResult?.RefreshToken
+		};
+	}
+
+	async refreshToken(dto: IRefreshTokenDTO): Promise<IRefreshTokenReturn> {
+		const command = new InitiateAuthCommand({
+			ClientId: process.env.COGNITO_CLIENT_ID,
+			AuthFlow: 'REFRESH_TOKEN_AUTH',
+			AuthParameters: {
+				REFRESH_TOKEN: dto.refreshToken
+			}
+		});
+
+		const { AuthenticationResult } = await this.cognitoClient.send(command);
+
+		return {
+			accessToken: AuthenticationResult?.AccessToken
 		};
 	}
 }

@@ -92,4 +92,10 @@ functions:
       - httpApi:
           method: POST
           path: /auth/sign-in
+  refreshToken:
+    handler: src/server/functions/auth/refreshToken.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /auth/refresh-token
 
