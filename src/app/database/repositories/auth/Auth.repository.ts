@@ -1,3 +1,4 @@
+import { addPrefix } from '@/app/utils';
 import {
 	type CognitoIdentityProviderClient,
 	ConfirmForgotPasswordCommand,
@@ -6,12 +7,12 @@ import {
 	InitiateAuthCommand,
 	SignUpCommand
 } from '@aws-sdk/client-cognito-identity-provider';
-import type { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
+import { type DynamoDBDocumentClient, PutCommand } from '@aws-sdk/lib-dynamodb';
+import { ulid } from 'ulid';
 import type {
 	IAuthRepository,
 	IConfirmAccountDTO,
 	ICreateUserDTO,
-	ICreateUserReturn,
 	IForgotPasswordDTO,
 	ILoginDTO,
 	ILoginReturn,
@@ -27,7 +28,7 @@ export class AuthRepository implements IAuthRepository {
 		private readonly dynamoClient: DynamoDBDocumentClient
 	) {}
 
-	async create(dto: ICreateUserDTO): Promise<ICreateUserReturn> {
+	async create(dto: ICreateUserDTO): Promise<void> {
 		const cognitoCommand = new SignUpCommand({
 			ClientId: process.env.COGNITO_CLIENT_ID,
 			Username: dto.email,
@@ -46,9 +47,26 @@ export class AuthRepository implements IAuthRepository {
 
 		const { UserSub } = await this.cognitoClient.send(cognitoCommand);
 
-		return {
-			id: UserSub
-		};
+		const sortableId = ulid();
+
+		const dynamoCommand = new PutCommand({
+			TableName: 'WaiterAppTable',
+			Item: {
+				PK: addPrefix('user', sortableId),
+				SK: addPrefix('user', sortableId),
+				GSI1PK: 'USERS',
+				GSI1SK: addPrefix('user', dto.email),
+				type: 'User',
+				id: sortableId,
+				name: dto.name,
+				role: dto.role,
+				externalId: UserSub,
+				createdAt: new Date().toISOString(),
+				deletedAt: new Date().toISOString()
+			}
+		});
+
+		await this.dynamoClient.send(dynamoCommand);
 	}
 
 	async confirmAccount(dto: IConfirmAccountDTO): Promise<void> {

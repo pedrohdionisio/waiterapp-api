@@ -7,10 +7,6 @@ export interface ICreateUserDTO {
 	role: UserRoleType;
 }
 
-export interface ICreateUserReturn {
-	id?: string;
-}
-
 export interface IConfirmAccountDTO {
 	email: string;
 	code: string;
@@ -50,7 +46,7 @@ export interface IResetPasswordReturn {
 }
 
 export interface IAuthRepository {
-	create(dto: ICreateUserDTO): Promise<ICreateUserReturn>;
+	create(dto: ICreateUserDTO): Promise<void>;
 	confirmAccount(dto: IConfirmAccountDTO): Promise<void>;
 	login(dto: ILoginDTO): Promise<ILoginReturn>;
 	refreshToken(dto: IRefreshTokenDTO): Promise<IRefreshTokenReturn>;

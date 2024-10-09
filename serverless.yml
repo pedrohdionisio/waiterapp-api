@@ -30,8 +30,9 @@ custom:
   minify: true
   sourcemap: false
   target: node20
-  exclude:
-    - "@aws-sdk/*"
+  esbuild:
+    exclude:
+      - "@aws-sdk/*"
   define:
     require.resolve: undefined
   platform: node

@@ -21,12 +21,10 @@ export class SignUpController implements IController {
 				};
 			}
 
-			const response = await this.signUpService.execute(parsedBody.data);
+			await this.signUpService.execute(parsedBody.data);
 
 			return {
-				body: {
-					...response
-				},
+				body: null,
 				statusCode: 201
 			};
 		} catch (error) {
