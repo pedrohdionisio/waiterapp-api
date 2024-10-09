@@ -1,6 +1,8 @@
 import {
 	type CognitoIdentityProviderClient,
+	ConfirmForgotPasswordCommand,
 	ConfirmSignUpCommand,
+	ForgotPasswordCommand,
 	InitiateAuthCommand,
 	SignUpCommand
 } from '@aws-sdk/client-cognito-identity-provider';
@@ -9,10 +11,13 @@ import type {
 	IConfirmAccountDTO,
 	ICreateUserDTO,
 	ICreateUserReturn,
+	IForgotPasswordDTO,
 	ILoginDTO,
 	ILoginReturn,
 	IRefreshTokenDTO,
-	IRefreshTokenReturn
+	IRefreshTokenReturn,
+	IResetPasswordDTO,
+	IResetPasswordReturn
 } from './AuthRepository.types';
 
 export class AuthRepository implements IAuthRepository {
@@ -83,6 +88,43 @@ export class AuthRepository implements IAuthRepository {
 
 		return {
 			accessToken: AuthenticationResult?.AccessToken
+		};
+	}
+
+	async forgotPassword(dto: IForgotPasswordDTO): Promise<void> {
+		const command = new ForgotPasswordCommand({
+			ClientId: process.env.COGNITO_CLIENT_ID,
+			Username: dto.email
+		});
+
+		await this.cognitoClient.send(command);
+	}
+
+	async resetPassword(dto: IResetPasswordDTO): Promise<IResetPasswordReturn> {
+		const resetPasswordCommand = new ConfirmForgotPasswordCommand({
+			ClientId: process.env.COGNITO_CLIENT_ID,
+			Username: dto.email,
+			ConfirmationCode: dto.code,
+			Password: dto.newPassword
+		});
+
+		await this.cognitoClient.send(resetPasswordCommand);
+
+		const loginCommand = new InitiateAuthCommand({
+			ClientId: process.env.COGNITO_CLIENT_ID,
+			AuthFlow: 'USER_PASSWORD_AUTH',
+			AuthParameters: {
+				USERNAME: dto.email,
+				PASSWORD: dto.newPassword
+			}
+		});
+
+		const { AuthenticationResult } =
+			await this.cognitoClient.send(loginCommand);
+
+		return {
+			accessToken: AuthenticationResult?.AccessToken,
+			refreshToken: AuthenticationResult?.RefreshToken
 		};
 	}
 }

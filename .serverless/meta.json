@@ -16,7 +16,9 @@
 			"frameworkVersion": "4",
 			"package": {
 				"individually": true,
-				"artifactsS3KeyDirname": "serverless/waiterapp/dev/code-artifacts"
+				"artifactsS3KeyDirname": "serverless/waiterapp/dev/code-artifacts",
+				"deploymentBucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+				"artifactDirectoryName": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z"
 			},
 			"provider": {
 				"name": "aws",
@@ -31,73 +33,577 @@
 				},
 				"stage": "dev",
 				"versionFunctions": true,
-				"remoteFunctionData": {
-					"Configuration": {
-						"FunctionName": "waiterapp-dev-refreshToken",
-						"FunctionArn": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-refreshToken",
-						"Runtime": "nodejs20.x",
-						"Role": "arn:aws:iam::356975246949:role/waiterapp-dev-us-east-1-lambdaRole",
-						"Handler": "src/server/functions/auth/refreshToken.handler",
-						"CodeSize": 81332,
-						"Description": "",
-						"Timeout": 6,
-						"MemorySize": 1024,
-						"LastModified": "2024-10-08T21:44:35.351+0000",
-						"CodeSha256": "YT/mPrRFRL5wjJ/qllqw858SYufFr5skcteHtVLXliU=",
-						"Version": "$LATEST",
-						"Environment": {
-							"Variables": {
-								"NODE_OPTIONS": "--enable-source-maps",
-								"COGNITO_CLIENT_ID": "2n8samr7regjcm32b97afuchl"
+				"compiledCloudFormationTemplate": {
+					"AWSTemplateFormatVersion": "2010-09-09",
+					"Description": "The AWS CloudFormation template for this Serverless application",
+					"Resources": {
+						"SignUpLogGroup": {
+							"Type": "AWS::Logs::LogGroup",
+							"Properties": {
+								"LogGroupName": "/aws/lambda/waiterapp-dev-signUp"
 							}
 						},
-						"KMSKeyArn": null,
-						"TracingConfig": {
-							"Mode": "PassThrough"
+						"AccountConfirmationLogGroup": {
+							"Type": "AWS::Logs::LogGroup",
+							"Properties": {
+								"LogGroupName": "/aws/lambda/waiterapp-dev-accountConfirmation"
+							}
 						},
-						"MasterArn": null,
-						"RevisionId": "28219d7f-eeab-42aa-a3d8-e96978ea9dcf",
-						"State": "Active",
-						"StateReason": null,
-						"StateReasonCode": null,
-						"LastUpdateStatus": "Successful",
-						"LastUpdateStatusReason": null,
-						"LastUpdateStatusReasonCode": null,
-						"PackageType": "Zip",
-						"SigningProfileVersionArn": null,
-						"SigningJobArn": null,
-						"Architectures": ["arm64"],
-						"EphemeralStorage": {
-							"Size": 512
+						"SignInLogGroup": {
+							"Type": "AWS::Logs::LogGroup",
+							"Properties": {
+								"LogGroupName": "/aws/lambda/waiterapp-dev-signIn"
+							}
 						},
-						"SnapStart": {
-							"ApplyOn": "None",
-							"OptimizationStatus": "Off"
+						"RefreshTokenLogGroup": "<REDACTED>",
+						"ForgotPasswordLogGroup": "<REDACTED>",
+						"ResetPasswordLogGroup": "<REDACTED>",
+						"IamRoleLambdaExecution": {
+							"Type": "AWS::IAM::Role",
+							"Properties": {
+								"AssumeRolePolicyDocument": {
+									"Version": "2012-10-17",
+									"Statement": [
+										{
+											"Effect": "Allow",
+											"Principal": {
+												"Service": ["lambda.amazonaws.com"]
+											},
+											"Action": ["sts:AssumeRole"]
+										}
+									]
+								},
+								"Policies": [
+									{
+										"PolicyName": {
+											"Fn::Join": ["-", ["waiterapp", "dev", "lambda"]]
+										},
+										"PolicyDocument": {
+											"Version": "2012-10-17",
+											"Statement": [
+												{
+													"Effect": "Allow",
+													"Action": [
+														"logs:CreateLogStream",
+														"logs:CreateLogGroup",
+														"logs:TagResource"
+													],
+													"Resource": [
+														{
+															"Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/waiterapp-dev*:*"
+														}
+													]
+												},
+												{
+													"Effect": "Allow",
+													"Action": ["logs:PutLogEvents"],
+													"Resource": [
+														{
+															"Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/waiterapp-dev*:*:*"
+														}
+													]
+												}
+											]
+										}
+									}
+								],
+								"Path": "/",
+								"RoleName": {
+									"Fn::Join": [
+										"-",
+										[
+											"waiterapp",
+											"dev",
+											{
+												"Ref": "AWS::Region"
+											},
+											"lambdaRole"
+										]
+									]
+								}
+							}
 						},
-						"RuntimeVersionConfig": {
-							"RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:83d84646b3540dd38341195452110b2178a7231400ce6bc20c6179e5b297ae04"
+						"SignUpLambdaFunction": {
+							"Type": "AWS::Lambda::Function",
+							"Properties": {
+								"Code": {
+									"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+									"S3Key": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z/waiterapp-signUp.zip"
+								},
+								"Handler": "src/server/functions/auth/signUp.handler",
+								"Runtime": "nodejs20.x",
+								"FunctionName": "waiterapp-dev-signUp",
+								"MemorySize": 1024,
+								"Timeout": 6,
+								"Architectures": ["arm64"],
+								"Environment": {
+									"Variables": {
+										"COGNITO_CLIENT_ID": {
+											"Ref": "WaiterAppUserPoolClient"
+										},
+										"NODE_OPTIONS": "--enable-source-maps"
+									}
+								},
+								"Role": {
+									"Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+								}
+							},
+							"DependsOn": ["SignUpLogGroup"]
 						},
-						"LoggingConfig": {
-							"LogFormat": "Text",
-							"ApplicationLogLevel": null,
-							"SystemLogLevel": null,
-							"LogGroup": "/aws/lambda/waiterapp-dev-refreshToken"
+						"AccountConfirmationLambdaFunction": {
+							"Type": "AWS::Lambda::Function",
+							"Properties": {
+								"Code": {
+									"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+									"S3Key": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z/waiterapp-accountConfirmation.zip"
+								},
+								"Handler": "src/server/functions/auth/accountConfirmation.handler",
+								"Runtime": "nodejs20.x",
+								"FunctionName": "waiterapp-dev-accountConfirmation",
+								"MemorySize": 1024,
+								"Timeout": 6,
+								"Architectures": ["arm64"],
+								"Environment": {
+									"Variables": {
+										"COGNITO_CLIENT_ID": {
+											"Ref": "WaiterAppUserPoolClient"
+										},
+										"NODE_OPTIONS": "--enable-source-maps"
+									}
+								},
+								"Role": {
+									"Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+								}
+							},
+							"DependsOn": ["AccountConfirmationLogGroup"]
 						},
-						"Layers": []
+						"SignInLambdaFunction": {
+							"Type": "AWS::Lambda::Function",
+							"Properties": {
+								"Code": {
+									"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+									"S3Key": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z/waiterapp-signIn.zip"
+								},
+								"Handler": "src/server/functions/auth/signIn.handler",
+								"Runtime": "nodejs20.x",
+								"FunctionName": "waiterapp-dev-signIn",
+								"MemorySize": 1024,
+								"Timeout": 6,
+								"Architectures": ["arm64"],
+								"Environment": {
+									"Variables": {
+										"COGNITO_CLIENT_ID": {
+											"Ref": "WaiterAppUserPoolClient"
+										},
+										"NODE_OPTIONS": "--enable-source-maps"
+									}
+								},
+								"Role": {
+									"Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+								}
+							},
+							"DependsOn": ["SignInLogGroup"]
+						},
+						"RefreshTokenLambdaFunction": "<REDACTED>",
+						"ForgotPasswordLambdaFunction": "<REDACTED>",
+						"ResetPasswordLambdaFunction": "<REDACTED>",
+						"RefreshTokenLambdaVersion5VMb8SJNnY4tRNjLvBxSP0GuIL85S9oQnXvtewXavU": "<REDACTED>",
+						"SignUpLambdaVersionM9EZOShf4x95ke6pYbmD2zXA6i85YzAZkdYyrzJm7lU": {
+							"Type": "AWS::Lambda::Version",
+							"DeletionPolicy": "Retain",
+							"Properties": {
+								"FunctionName": {
+									"Ref": "SignUpLambdaFunction"
+								},
+								"CodeSha256": "kdOENEjaDULuK3L7NgC1HxwWdjVc6VYdkbCb2cAWf6Y="
+							}
+						},
+						"SignInLambdaVersionWUgedujSZ6vNNo0nt1BOGM11f9bnWGsgcAtnkVPg": {
+							"Type": "AWS::Lambda::Version",
+							"DeletionPolicy": "Retain",
+							"Properties": {
+								"FunctionName": {
+									"Ref": "SignInLambdaFunction"
+								},
+								"CodeSha256": "RFeeMCOq46/dxBe4WjxECdWx88QWnzu3tG+9Y+n06Dg="
+							}
+						},
+						"ForgotPasswordLambdaVersionxO4BYSJR9y40lbbdz1DNU16OimIbXOCa3oPEygeTrs": "<REDACTED>",
+						"ResetPasswordLambdaVersionf77Ep95uNRLpkxnoGKs139Z1l7nnn2NdvWvPiKQIA": "<REDACTED>",
+						"AccountConfirmationLambdaVersionqEWgZ2ikt7N7AQ7QA9aLYWrE41N70Ojav88SdeAK4": {
+							"Type": "AWS::Lambda::Version",
+							"DeletionPolicy": "Retain",
+							"Properties": {
+								"FunctionName": {
+									"Ref": "AccountConfirmationLambdaFunction"
+								},
+								"CodeSha256": "RVSj/WKSVhUFwto0mFsHXyLHuzzGO3uctwfLcSVw43I="
+							}
+						},
+						"HttpApi": {
+							"Type": "AWS::ApiGatewayV2::Api",
+							"Properties": {
+								"Name": "dev-waiterapp",
+								"ProtocolType": "HTTP"
+							}
+						},
+						"HttpApiStage": {
+							"Type": "AWS::ApiGatewayV2::Stage",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"StageName": "$default",
+								"AutoDeploy": true,
+								"DefaultRouteSettings": {
+									"DetailedMetricsEnabled": false
+								}
+							}
+						},
+						"SignUpLambdaPermissionHttpApi": {
+							"Type": "AWS::Lambda::Permission",
+							"Properties": {
+								"FunctionName": {
+									"Fn::GetAtt": ["SignUpLambdaFunction", "Arn"]
+								},
+								"Action": "lambda:InvokeFunction",
+								"Principal": "apigateway.amazonaws.com",
+								"SourceArn": {
+									"Fn::Join": [
+										"",
+										[
+											"arn:",
+											{
+												"Ref": "AWS::Partition"
+											},
+											":execute-api:",
+											{
+												"Ref": "AWS::Region"
+											},
+											":",
+											{
+												"Ref": "AWS::AccountId"
+											},
+											":",
+											{
+												"Ref": "HttpApi"
+											},
+											"/*"
+										]
+									]
+								}
+							}
+						},
+						"HttpApiIntegrationSignUp": {
+							"Type": "AWS::ApiGatewayV2::Integration",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"IntegrationType": "AWS_PROXY",
+								"IntegrationUri": {
+									"Fn::GetAtt": ["SignUpLambdaFunction", "Arn"]
+								},
+								"PayloadFormatVersion": "2.0",
+								"TimeoutInMillis": 30000
+							}
+						},
+						"HttpApiRoutePostAuthSignDashup": {
+							"Type": "AWS::ApiGatewayV2::Route",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"RouteKey": "POST /auth/sign-up",
+								"Target": {
+									"Fn::Join": [
+										"/",
+										[
+											"integrations",
+											{
+												"Ref": "HttpApiIntegrationSignUp"
+											}
+										]
+									]
+								}
+							},
+							"DependsOn": "HttpApiIntegrationSignUp"
+						},
+						"AccountConfirmationLambdaPermissionHttpApi": {
+							"Type": "AWS::Lambda::Permission",
+							"Properties": {
+								"FunctionName": {
+									"Fn::GetAtt": ["AccountConfirmationLambdaFunction", "Arn"]
+								},
+								"Action": "lambda:InvokeFunction",
+								"Principal": "apigateway.amazonaws.com",
+								"SourceArn": {
+									"Fn::Join": [
+										"",
+										[
+											"arn:",
+											{
+												"Ref": "AWS::Partition"
+											},
+											":execute-api:",
+											{
+												"Ref": "AWS::Region"
+											},
+											":",
+											{
+												"Ref": "AWS::AccountId"
+											},
+											":",
+											{
+												"Ref": "HttpApi"
+											},
+											"/*"
+										]
+									]
+								}
+							}
+						},
+						"HttpApiIntegrationAccountConfirmation": {
+							"Type": "AWS::ApiGatewayV2::Integration",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"IntegrationType": "AWS_PROXY",
+								"IntegrationUri": {
+									"Fn::GetAtt": ["AccountConfirmationLambdaFunction", "Arn"]
+								},
+								"PayloadFormatVersion": "2.0",
+								"TimeoutInMillis": 30000
+							}
+						},
+						"HttpApiRoutePostAuthAccountDashconfirmation": {
+							"Type": "AWS::ApiGatewayV2::Route",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"RouteKey": "POST /auth/account-confirmation",
+								"Target": {
+									"Fn::Join": [
+										"/",
+										[
+											"integrations",
+											{
+												"Ref": "HttpApiIntegrationAccountConfirmation"
+											}
+										]
+									]
+								}
+							},
+							"DependsOn": "HttpApiIntegrationAccountConfirmation"
+						},
+						"SignInLambdaPermissionHttpApi": {
+							"Type": "AWS::Lambda::Permission",
+							"Properties": {
+								"FunctionName": {
+									"Fn::GetAtt": ["SignInLambdaFunction", "Arn"]
+								},
+								"Action": "lambda:InvokeFunction",
+								"Principal": "apigateway.amazonaws.com",
+								"SourceArn": {
+									"Fn::Join": [
+										"",
+										[
+											"arn:",
+											{
+												"Ref": "AWS::Partition"
+											},
+											":execute-api:",
+											{
+												"Ref": "AWS::Region"
+											},
+											":",
+											{
+												"Ref": "AWS::AccountId"
+											},
+											":",
+											{
+												"Ref": "HttpApi"
+											},
+											"/*"
+										]
+									]
+								}
+							}
+						},
+						"HttpApiIntegrationSignIn": {
+							"Type": "AWS::ApiGatewayV2::Integration",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"IntegrationType": "AWS_PROXY",
+								"IntegrationUri": {
+									"Fn::GetAtt": ["SignInLambdaFunction", "Arn"]
+								},
+								"PayloadFormatVersion": "2.0",
+								"TimeoutInMillis": 30000
+							}
+						},
+						"HttpApiRoutePostAuthSignDashin": {
+							"Type": "AWS::ApiGatewayV2::Route",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"RouteKey": "POST /auth/sign-in",
+								"Target": {
+									"Fn::Join": [
+										"/",
+										[
+											"integrations",
+											{
+												"Ref": "HttpApiIntegrationSignIn"
+											}
+										]
+									]
+								}
+							},
+							"DependsOn": "HttpApiIntegrationSignIn"
+						},
+						"RefreshTokenLambdaPermissionHttpApi": "<REDACTED>",
+						"HttpApiIntegrationRefreshToken": "<REDACTED>",
+						"HttpApiRoutePostAuthRefreshDashtoken": "<REDACTED>",
+						"ForgotPasswordLambdaPermissionHttpApi": "<REDACTED>",
+						"HttpApiIntegrationForgotPassword": "<REDACTED>",
+						"HttpApiRoutePostAuthForgotDashpassword": "<REDACTED>",
+						"ResetPasswordLambdaPermissionHttpApi": "<REDACTED>",
+						"HttpApiIntegrationResetPassword": "<REDACTED>",
+						"HttpApiRoutePostAuthResetDashpassword": "<REDACTED>",
+						"WaiterAppUserPool": {
+							"Type": "AWS::Cognito::UserPool",
+							"Properties": {
+								"UserPoolName": "WaiterAppUserPool",
+								"MfaConfiguration": "OFF",
+								"AutoVerifiedAttributes": ["email"],
+								"AdminCreateUserConfig": {
+									"AllowAdminCreateUserOnly": false
+								},
+								"UsernameAttributes": ["email"],
+								"AccountRecoverySetting": {
+									"RecoveryMechanisms": [
+										{
+											"Name": "verified_email",
+											"Priority": 1
+										}
+									]
+								},
+								"Policies": {
+									"PasswordPolicy": "<REDACTED>"
+								},
+								"Schema": [
+									{
+										"Name": "name",
+										"Mutable": true,
+										"Required": true,
+										"AttributeDataType": "String"
+									},
+									{
+										"Name": "role",
+										"Mutable": true,
+										"Required": false,
+										"AttributeDataType": "String"
+									}
+								]
+							}
+						},
+						"WaiterAppUserPoolClient": {
+							"Type": "AWS::Cognito::UserPoolClient",
+							"Properties": {
+								"ClientName": "WaiterAppUserPoolClient",
+								"UserPoolId": {
+									"Ref": "WaiterAppUserPool"
+								},
+								"ExplicitAuthFlows": [
+									"ALLOW_USER_PASSWORD_AUTH",
+									"ALLOW_REFRESH_TOKEN_AUTH"
+								],
+								"TokenValidityUnits": "<REDACTED>",
+								"AccessTokenValidity": "<REDACTED>",
+								"RefreshTokenValidity": "<REDACTED>"
+							}
+						}
 					},
-					"Code": {
-						"RepositoryType": "S3",
-						"Location": "https://prod-iad-c1-djusa-tasks.s3.us-east-1.amazonaws.com/snapshots/356975246949/waiterapp-dev-refreshToken-20fe33e1-ca20-4140-8be2-76192eed89a3?versionId=arqIlyUxkFOk_K6eaJ1M2NvNBYndY4Q0&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEPb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIHQT0qi0eOpjkMc7YV6caTFi7ysS455QplZYAabH7953AiEA0mvjFT6M6xMx3h8Y9%2B9motdtc6BTCBFnjJa7%2Fz7AROUquQUIThAEGgw0NzkyMzMwMjUzNzkiDEZMNrlcYC5Cj4oMfyqWBRSIAOvHy6zOeRUT7QsCBzqzaoOP6vGSGghqSpYNG1EzgcrhpSXfSIHLTzR4CVAmAMp2EZLrqS%2BrKqLeN33r9uwMsFON7gVe6x6yr1QpF6GCzDLsP7ZwpITSyrRVOyIiBi%2Bi1adxAV7vEsHGV2dw1VoGEZfsuHEXA%2FADWcFwlBOHz5Tk%2FERSq668cnD6j1wY5JrfQOI74k4KHtY8EYbMbxB1UNYiEvpEZnH0MvP8DMkFdQ1WQ%2FMKA7nA7NuX3IBC0HK3cxsYsUzBVTy%2FlXz5SkQQED6Eka36C34fhKKCPhFJ2HwkVZ0yhTuUElKKfVrOirycMCs8mEfDD8GTdQQhOWb94KOyULrA4lLHalGBej2eX0XjbdlFr1ChF0JYICwnGyOTAjaLM%2FUYb04oAMc%2B6NosDUipSghxD8io7O1x6FlCrY9SV%2FzNtYXd1Y1wQam4ZfSZ1ahnLB5iLPJiswUkwaH7YRDbE09yaj%2BfBoI57%2B3xD2K7g9F5BsYzKv2XRHejTuK%2Fr13M5qekfjyhwRaY8f29aMWMd38FWXnCCCfWdddm92ZllItAsAsuU2Zyb7oVz3WmSLv5apPSSVVQH2tooSPuYkHeF9aGPhEJmYhtx96LVwHkbFOK7vVaAZLnwq%2Ba9mjK7aDzgY7mlRmMAOiOSjFTWsaz0OVlrE%2B8GWFqtBsFRkQxT5GKEzK1Bic2dkLJoknIzkRZIUNmbTp%2FOJAm9lfInT%2Fi%2B%2B3TBrHHg0VHBraq6IT0OI91ZkAzPw2RxvZ58A6zZiLH7czkw8dTA53MUHt8ojOmBPlxAZZXSlYGoM2w2gHKUwyrDkD79X%2FyuZsfnSKfwZwIVFjObaiESmiR5UfQhlRn0ChbIcguPSdP1hi389%2B6zMQKMLbFlrgGOrEBwdGqeF6jgOEfUQxhCa6x9cKdfOY%2BGBbtVnPP98XaSJ39o9Xr3fD9RcZFZ0OlJw%2BSBDgk07ecF0ySXxP4T0yXm3Y1UDG6yV%2BIAKrQOVPmiGyaYRYJunbsM7bkk5atV7UogCVGYAQg7vDzl%2B%2BQDGIRLLnny5Cd5C06Hkvfx7cA3MEMtnRgmw0nHzH2qr8fwYkgIU5OD8OXPttmvUUEspzUN0QxVPVXr8XCi8aq1Rh5HkQ%2F&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241008T214708Z&X-Amz-SignedHeaders=host&X-Amz-Expires=599&X-Amz-Credential=ASIAW7FEDUVR73HRIJW4%2F20241008%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=eca23cdb2e9b15c11015420cfa802e2ea19a48e496b91f89e35a148289cbe242",
-						"ImageUri": null,
-						"ResolvedImageUri": null
-					},
-					"Tags": {
-						"aws:cloudformation:stack-name": "waiterapp-dev",
-						"aws:cloudformation:stack-id": "arn:aws:cloudformation:us-east-1:356975246949:stack/waiterapp-dev/b54ebdd0-843e-11ef-92b9-0affca4126ff",
-						"STAGE": "dev",
-						"aws:cloudformation:logical-id": "RefreshTokenLambdaFunction"
+					"Outputs": {
+						"ServerlessDeploymentBucketName": {
+							"Value": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+							"Export": {
+								"Name": "sls-waiterapp-dev-ServerlessDeploymentBucketName"
+							}
+						},
+						"RefreshTokenLambdaFunctionQualifiedArn": "<REDACTED>",
+						"SignUpLambdaFunctionQualifiedArn": {
+							"Description": "Current Lambda function version",
+							"Value": {
+								"Ref": "SignUpLambdaVersionM9EZOShf4x95ke6pYbmD2zXA6i85YzAZkdYyrzJm7lU"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-SignUpLambdaFunctionQualifiedArn"
+							}
+						},
+						"SignInLambdaFunctionQualifiedArn": {
+							"Description": "Current Lambda function version",
+							"Value": {
+								"Ref": "SignInLambdaVersionWUgedujSZ6vNNo0nt1BOGM11f9bnWGsgcAtnkVPg"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-SignInLambdaFunctionQualifiedArn"
+							}
+						},
+						"ForgotPasswordLambdaFunctionQualifiedArn": "<REDACTED>",
+						"ResetPasswordLambdaFunctionQualifiedArn": "<REDACTED>",
+						"AccountConfirmationLambdaFunctionQualifiedArn": {
+							"Description": "Current Lambda function version",
+							"Value": {
+								"Ref": "AccountConfirmationLambdaVersionqEWgZ2ikt7N7AQ7QA9aLYWrE41N70Ojav88SdeAK4"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-AccountConfirmationLambdaFunctionQualifiedArn"
+							}
+						},
+						"HttpApiId": {
+							"Description": "Id of the HTTP API",
+							"Value": {
+								"Ref": "HttpApi"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-HttpApiId"
+							}
+						},
+						"HttpApiUrl": {
+							"Description": "URL of the HTTP API",
+							"Value": {
+								"Fn::Join": [
+									"",
+									[
+										"https://",
+										{
+											"Ref": "HttpApi"
+										},
+										".execute-api.",
+										{
+											"Ref": "AWS::Region"
+										},
+										".",
+										{
+											"Ref": "AWS::URLSuffix"
+										}
+									]
+								]
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-HttpApiUrl"
+							}
+						}
 					}
-				}
+				},
+				"vpc": {}
 			},
 			"custom": {
 				"bundle": true,
@@ -166,7 +672,8 @@
 							"RefreshTokenValidity": "<REDACTED>"
 						}
 					}
-				}
+				},
+				"Outputs": {}
 			},
 			"functions": {
 				"signUp": {
@@ -176,10 +683,23 @@
 							"httpApi": {
 								"method": "POST",
 								"path": "/auth/sign-up"
-							}
+							},
+							"resolvedMethod": "POST",
+							"resolvedPath": "/auth/sign-up"
 						}
 					],
-					"name": "waiterapp-dev-signUp"
+					"name": "waiterapp-dev-signUp",
+					"environment": {
+						"NODE_OPTIONS": "--enable-source-maps"
+					},
+					"package": {
+						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-signUp.zip"
+					},
+					"memory": 1024,
+					"timeout": 6,
+					"runtime": "nodejs20.x",
+					"vpc": {},
+					"versionLogicalId": "SignUpLambdaVersionM9EZOShf4x95ke6pYbmD2zXA6i85YzAZkdYyrzJm7lU"
 				},
 				"accountConfirmation": {
 					"handler": "src/server/functions/auth/accountConfirmation.handler",
@@ -188,10 +708,23 @@
 							"httpApi": {
 								"method": "POST",
 								"path": "/auth/account-confirmation"
-							}
+							},
+							"resolvedMethod": "POST",
+							"resolvedPath": "/auth/account-confirmation"
 						}
 					],
-					"name": "waiterapp-dev-accountConfirmation"
+					"name": "waiterapp-dev-accountConfirmation",
+					"environment": {
+						"NODE_OPTIONS": "--enable-source-maps"
+					},
+					"package": {
+						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-accountConfirmation.zip"
+					},
+					"memory": 1024,
+					"timeout": 6,
+					"runtime": "nodejs20.x",
+					"vpc": {},
+					"versionLogicalId": "AccountConfirmationLambdaVersionqEWgZ2ikt7N7AQ7QA9aLYWrE41N70Ojav88SdeAK4"
 				},
 				"signIn": {
 					"handler": "src/server/functions/auth/signIn.handler",
@@ -200,22 +733,35 @@
 							"httpApi": {
 								"method": "POST",
 								"path": "/auth/sign-in"
-							}
+							},
+							"resolvedMethod": "POST",
+							"resolvedPath": "/auth/sign-in"
 						}
 					],
-					"name": "waiterapp-dev-signIn"
+					"name": "waiterapp-dev-signIn",
+					"environment": {
+						"NODE_OPTIONS": "--enable-source-maps"
+					},
+					"package": {
+						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-signIn.zip"
+					},
+					"memory": 1024,
+					"timeout": 6,
+					"runtime": "nodejs20.x",
+					"vpc": {},
+					"versionLogicalId": "SignInLambdaVersionWUgedujSZ6vNNo0nt1BOGM11f9bnWGsgcAtnkVPg"
 				},
-				"refreshToken": "<REDACTED>"
+				"refreshToken": "<REDACTED>",
+				"forgotPassword": "<REDACTED>",
+				"resetPassword": "<REDACTED>"
 			}
 		},
-		"serviceRawFile": "service: waiterapp\nframeworkVersion: \"4\"\n\npackage:\n  individually: true\n\nprovider:\n  name: aws\n  region: us-east-1\n  runtime: nodejs20.x\n  deploymentMethod: direct\n  architecture: arm64\n  environment:\n    COGNITO_CLIENT_ID: !Ref WaiterAppUserPoolClient\n\ncustom:\n  bundle: true\n  minify: true\n  sourcemap: false\n  target: node20\n  exclude:\n    - \"@aws-sdk/*\"\n  define:\n    require.resolve: undefined\n  platform: node\n  concurrency: 10\n\nresources:\n  Resources:\n    WaiterAppUserPool:\n      Type: AWS::Cognito::UserPool\n      Properties:\n        UserPoolName: WaiterAppUserPool\n        MfaConfiguration: OFF\n        AutoVerifiedAttributes:\n          - email\n        AdminCreateUserConfig:\n          AllowAdminCreateUserOnly: false\n        UsernameAttributes:\n          - email\n        AccountRecoverySetting:\n          RecoveryMechanisms:\n            - Name: \"verified_email\"\n              Priority: 1\n        Policies:\n          PasswordPolicy:\n            MinimumLength: 8\n            RequireLowercase: false\n            RequireNumbers: false\n            RequireSymbols: false\n            RequireUppercase: false\n            TemporaryPasswordValidityDays: 7\n        Schema:\n          - Name: name\n            Mutable: true\n            Required: true\n            AttributeDataType: String\n          - Name: role\n            Mutable: true\n            Required: false\n            AttributeDataType: String\n    WaiterAppUserPoolClient:\n      Type: AWS::Cognito::UserPoolClient\n      Properties:\n        ClientName: WaiterAppUserPoolClient\n        UserPoolId: !Ref WaiterAppUserPool\n        ExplicitAuthFlows:\n          - ALLOW_USER_PASSWORD_AUTH\n          - ALLOW_REFRESH_TOKEN_AUTH\n        TokenValidityUnits:\n          AccessToken: hours\n          RefreshToken: hours\n        AccessTokenValidity: 3\n        RefreshTokenValidity: 168 # 7 days\n\nfunctions:\n  signUp:\n    handler: src/server/functions/auth/signUp.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/sign-up\n  accountConfirmation:\n    handler: src/server/functions/auth/accountConfirmation.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/account-confirmation\n  signIn:\n    handler: src/server/functions/auth/signIn.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/sign-in\n  refreshToken:\n    handler: src/server/functions/auth/refreshToken.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/refresh-token\n\n",
-		"command": ["deploy", "function"],
-		"options": {
-			"function": "refreshToken"
-		},
+		"serviceRawFile": "service: waiterapp\nframeworkVersion: \"4\"\n\npackage:\n  individually: true\n\nprovider:\n  name: aws\n  region: us-east-1\n  runtime: nodejs20.x\n  deploymentMethod: direct\n  architecture: arm64\n  environment:\n    COGNITO_CLIENT_ID: !Ref WaiterAppUserPoolClient\n\ncustom:\n  bundle: true\n  minify: true\n  sourcemap: false\n  target: node20\n  exclude:\n    - \"@aws-sdk/*\"\n  define:\n    require.resolve: undefined\n  platform: node\n  concurrency: 10\n\nresources:\n  Resources:\n    WaiterAppUserPool:\n      Type: AWS::Cognito::UserPool\n      Properties:\n        UserPoolName: WaiterAppUserPool\n        MfaConfiguration: OFF\n        AutoVerifiedAttributes:\n          - email\n        AdminCreateUserConfig:\n          AllowAdminCreateUserOnly: false\n        UsernameAttributes:\n          - email\n        AccountRecoverySetting:\n          RecoveryMechanisms:\n            - Name: \"verified_email\"\n              Priority: 1\n        Policies:\n          PasswordPolicy:\n            MinimumLength: 8\n            RequireLowercase: false\n            RequireNumbers: false\n            RequireSymbols: false\n            RequireUppercase: false\n            TemporaryPasswordValidityDays: 7\n        Schema:\n          - Name: name\n            Mutable: true\n            Required: true\n            AttributeDataType: String\n          - Name: role\n            Mutable: true\n            Required: false\n            AttributeDataType: String\n    WaiterAppUserPoolClient:\n      Type: AWS::Cognito::UserPoolClient\n      Properties:\n        ClientName: WaiterAppUserPoolClient\n        UserPoolId: !Ref WaiterAppUserPool\n        ExplicitAuthFlows:\n          - ALLOW_USER_PASSWORD_AUTH\n          - ALLOW_REFRESH_TOKEN_AUTH\n        TokenValidityUnits:\n          AccessToken: hours\n          RefreshToken: hours\n        AccessTokenValidity: 3\n        RefreshTokenValidity: 168 # 7 days\n\nfunctions:\n  signUp:\n    handler: src/server/functions/auth/signUp.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/sign-up\n  accountConfirmation:\n    handler: src/server/functions/auth/accountConfirmation.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/account-confirmation\n  signIn:\n    handler: src/server/functions/auth/signIn.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/sign-in\n  refreshToken:\n    handler: src/server/functions/auth/refreshToken.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/refresh-token\n  forgotPassword:\n    handler: src/server/functions/auth/forgotPassword.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/forgot-password\n  resetPassword:\n    handler: src/server/functions/auth/resetPassword.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/reset-password\n\n",
+		"command": ["deploy"],
+		"options": {},
 		"error": null,
 		"params": {},
-		"machineId": "c40f6475f3d6cec24c838930bebccf92",
+		"machineId": "d4b306d838edc4f825be19816a074249",
 		"stage": "dev",
 		"accessKeyV2": "<REDACTED>",
 		"accessKeyV1": "<REDACTED>",
@@ -244,32 +790,44 @@
 		"serviceUniqueId": "arn:aws:cloudformation:us-east-1:356975246949:stack/waiterapp-dev/b54ebdd0-843e-11ef-92b9-0affca4126ff",
 		"serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:356975246949:stack/waiterapp-dev/b54ebdd0-843e-11ef-92b9-0affca4126ff",
 		"serviceProviderAwsCfStackCreated": "2024-10-06T23:57:13.763Z",
-		"serviceProviderAwsCfStackUpdated": "2024-10-08T21:44:21.511Z",
+		"serviceProviderAwsCfStackUpdated": "2024-10-09T10:59:00.082Z",
 		"serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
 		"serviceProviderAwsCfStackOutputs": [
 			{
 				"OutputKey": "AccountConfirmationLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-accountConfirmation:3",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-accountConfirmation:5",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-AccountConfirmationLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "SignInLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-signIn:10",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-signIn:12",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-SignInLambdaFunctionQualifiedArn"
 			},
 			{
+				"OutputKey": "ResetPasswordLambdaFunctionQualifiedArn",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-resetPassword:2",
+				"Description": "Current Lambda function version",
+				"ExportName": "sls-waiterapp-dev-ResetPasswordLambdaFunctionQualifiedArn"
+			},
+			{
 				"OutputKey": "RefreshTokenLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-refreshToken:1",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-refreshToken:3",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-RefreshTokenLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "SignUpLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-signUp:10",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-signUp:12",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-SignUpLambdaFunctionQualifiedArn"
+			},
+			{
+				"OutputKey": "ForgotPasswordLambdaFunctionQualifiedArn",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-forgotPassword:2",
+				"Description": "Current Lambda function version",
+				"ExportName": "sls-waiterapp-dev-ForgotPasswordLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "HttpApiId",

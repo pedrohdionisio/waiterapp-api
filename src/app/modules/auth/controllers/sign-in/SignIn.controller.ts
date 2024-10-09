@@ -4,6 +4,7 @@ import type { IController, IRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import {
 	InvalidParameterException,
+	NotAuthorizedException,
 	UserNotFoundException
 } from '@aws-sdk/client-cognito-identity-provider';
 
@@ -39,7 +40,10 @@ export class SignInController implements IController {
 				};
 			}
 
-			if (error instanceof InvalidParameterException) {
+			if (
+				error instanceof InvalidParameterException ||
+				error instanceof NotAuthorizedException
+			) {
 				return {
 					statusCode: 401,
 					body: {

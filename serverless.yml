@@ -98,4 +98,16 @@ functions:
       - httpApi:
           method: POST
           path: /auth/refresh-token
+  forgotPassword:
+    handler: src/server/functions/auth/forgotPassword.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /auth/forgot-password
+  resetPassword:
+    handler: src/server/functions/auth/resetPassword.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /auth/reset-password
 

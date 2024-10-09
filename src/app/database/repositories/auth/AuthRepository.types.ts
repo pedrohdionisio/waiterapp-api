@@ -33,9 +33,27 @@ export interface IRefreshTokenDTO {
 export interface IRefreshTokenReturn {
 	accessToken?: string;
 }
+
+export interface IForgotPasswordDTO {
+	email: string;
+}
+
+export interface IResetPasswordDTO {
+	email: string;
+	code: string;
+	newPassword: string;
+}
+
+export interface IResetPasswordReturn {
+	accessToken?: string;
+	refreshToken?: string;
+}
+
 export interface IAuthRepository {
 	create(dto: ICreateUserDTO): Promise<ICreateUserReturn>;
 	confirmAccount(dto: IConfirmAccountDTO): Promise<void>;
 	login(dto: ILoginDTO): Promise<ILoginReturn>;
 	refreshToken(dto: IRefreshTokenDTO): Promise<IRefreshTokenReturn>;
+	forgotPassword(dto: IForgotPasswordDTO): Promise<void>;
+	resetPassword(dto: IResetPasswordDTO): Promise<IResetPasswordReturn>;
 }
