@@ -6,6 +6,7 @@ import {
 	InitiateAuthCommand,
 	SignUpCommand
 } from '@aws-sdk/client-cognito-identity-provider';
+import type { DynamoDBDocumentClient } from '@aws-sdk/lib-dynamodb';
 import type {
 	IAuthRepository,
 	IConfirmAccountDTO,
@@ -21,10 +22,13 @@ import type {
 } from './AuthRepository.types';
 
 export class AuthRepository implements IAuthRepository {
-	constructor(private readonly cognitoClient: CognitoIdentityProviderClient) {}
+	constructor(
+		private readonly cognitoClient: CognitoIdentityProviderClient,
+		private readonly dynamoClient: DynamoDBDocumentClient
+	) {}
 
 	async create(dto: ICreateUserDTO): Promise<ICreateUserReturn> {
-		const command = new SignUpCommand({
+		const cognitoCommand = new SignUpCommand({
 			ClientId: process.env.COGNITO_CLIENT_ID,
 			Username: dto.email,
 			Password: dto.password,
@@ -40,7 +44,7 @@ export class AuthRepository implements IAuthRepository {
 			]
 		});
 
-		const { UserSub } = await this.cognitoClient.send(command);
+		const { UserSub } = await this.cognitoClient.send(cognitoCommand);
 
 		return {
 			id: UserSub

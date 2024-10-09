@@ -15,6 +15,27 @@
 					"Ref": "WaiterAppUserPoolClient"
 				}
 			},
+			"iam": {
+				"role": {
+					"statements": [
+						{
+							"Effect": "Allow",
+							"Action": [
+								"dynamodb:PutItem",
+								"dynamodb:DeleteItem",
+								"dynamodb:GetItem",
+								"dynamodb:UpdateItem",
+								"dynamodb:Query"
+							],
+							"Resource": [
+								{
+									"Fn::GetAtt": ["WaiterAppTable", "Arn"]
+								}
+							]
+						}
+					]
+				}
+			},
 			"stage": "dev",
 			"versionFunctions": true,
 			"compiledCloudFormationTemplate": {
@@ -101,6 +122,9 @@
 														"Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/waiterapp-dev*:*:*"
 													}
 												]
+											},
+											{
+												"$ref": "$[\"service\"][\"provider\"][\"iam\"][\"role\"][\"statements\"][0]"
 											}
 										]
 									}
@@ -127,7 +151,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z/waiterapp-signUp.zip"
+								"S3Key": "serverless/waiterapp/dev/1728474810282-2024-10-09T11:53:30.282Z/waiterapp-signUp.zip"
 							},
 							"Handler": "src/server/functions/auth/signUp.handler",
 							"Runtime": "nodejs20.x",
@@ -154,7 +178,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z/waiterapp-accountConfirmation.zip"
+								"S3Key": "serverless/waiterapp/dev/1728474810282-2024-10-09T11:53:30.282Z/waiterapp-accountConfirmation.zip"
 							},
 							"Handler": "src/server/functions/auth/accountConfirmation.handler",
 							"Runtime": "nodejs20.x",
@@ -181,7 +205,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z/waiterapp-signIn.zip"
+								"S3Key": "serverless/waiterapp/dev/1728474810282-2024-10-09T11:53:30.282Z/waiterapp-signIn.zip"
 							},
 							"Handler": "src/server/functions/auth/signIn.handler",
 							"Runtime": "nodejs20.x",
@@ -208,7 +232,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z/waiterapp-refreshToken.zip"
+								"S3Key": "serverless/waiterapp/dev/1728474810282-2024-10-09T11:53:30.282Z/waiterapp-refreshToken.zip"
 							},
 							"Handler": "src/server/functions/auth/refreshToken.handler",
 							"Runtime": "nodejs20.x",
@@ -235,7 +259,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z/waiterapp-forgotPassword.zip"
+								"S3Key": "serverless/waiterapp/dev/1728474810282-2024-10-09T11:53:30.282Z/waiterapp-forgotPassword.zip"
 							},
 							"Handler": "src/server/functions/auth/forgotPassword.handler",
 							"Runtime": "nodejs20.x",
@@ -262,7 +286,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z/waiterapp-resetPassword.zip"
+								"S3Key": "serverless/waiterapp/dev/1728474810282-2024-10-09T11:53:30.282Z/waiterapp-resetPassword.zip"
 							},
 							"Handler": "src/server/functions/auth/resetPassword.handler",
 							"Runtime": "nodejs20.x",
@@ -284,64 +308,64 @@
 						},
 						"DependsOn": ["ResetPasswordLogGroup"]
 					},
-					"RefreshTokenLambdaVersion5VMb8SJNnY4tRNjLvBxSP0GuIL85S9oQnXvtewXavU": {
+					"RefreshTokenLambdaVersion16OF7UTcp7Ov4UiqY0RtktRHSWkeztvvw7Dhe1F5dM": {
 						"Type": "AWS::Lambda::Version",
 						"DeletionPolicy": "Retain",
 						"Properties": {
 							"FunctionName": {
 								"Ref": "RefreshTokenLambdaFunction"
 							},
-							"CodeSha256": "NGtdQl0QWlFcdfdZmZZhNhW7cpxeBOi1/ZTKKa6ApHw="
+							"CodeSha256": "KyvVKgMwCCWibtGJj8MtP8usbJyZ0+OjiGFR1yfqNSQ="
 						}
 					},
-					"SignUpLambdaVersionM9EZOShf4x95ke6pYbmD2zXA6i85YzAZkdYyrzJm7lU": {
-						"Type": "AWS::Lambda::Version",
-						"DeletionPolicy": "Retain",
-						"Properties": {
-							"FunctionName": {
-								"Ref": "SignUpLambdaFunction"
-							},
-							"CodeSha256": "kdOENEjaDULuK3L7NgC1HxwWdjVc6VYdkbCb2cAWf6Y="
-						}
-					},
-					"SignInLambdaVersionWUgedujSZ6vNNo0nt1BOGM11f9bnWGsgcAtnkVPg": {
-						"Type": "AWS::Lambda::Version",
-						"DeletionPolicy": "Retain",
-						"Properties": {
-							"FunctionName": {
-								"Ref": "SignInLambdaFunction"
-							},
-							"CodeSha256": "RFeeMCOq46/dxBe4WjxECdWx88QWnzu3tG+9Y+n06Dg="
-						}
-					},
-					"ForgotPasswordLambdaVersionxO4BYSJR9y40lbbdz1DNU16OimIbXOCa3oPEygeTrs": {
+					"ForgotPasswordLambdaVersionMJF5t940tklSxwRovIu3IiISumDX3MBbMrZ9JKhdM": {
 						"Type": "AWS::Lambda::Version",
 						"DeletionPolicy": "Retain",
 						"Properties": {
 							"FunctionName": {
 								"Ref": "ForgotPasswordLambdaFunction"
 							},
-							"CodeSha256": "BIqST2iiNt1euk1mS7XiPAECQ1vMTMJtXWaf3Pu7J6s="
+							"CodeSha256": "Sa6A9rHgMELWJLLUAi8K7otDzzPyXTtyXB5EDqXA1Lg="
 						}
 					},
-					"ResetPasswordLambdaVersionf77Ep95uNRLpkxnoGKs139Z1l7nnn2NdvWvPiKQIA": {
+					"ResetPasswordLambdaVersionr7K0vsMsIRPtSRtujvzDdvIcD6dmlTJCWtZPXeBCPs": {
 						"Type": "AWS::Lambda::Version",
 						"DeletionPolicy": "Retain",
 						"Properties": {
 							"FunctionName": {
 								"Ref": "ResetPasswordLambdaFunction"
 							},
-							"CodeSha256": "ppB3RuVz8RT0Ppduq/Hq7cPVx/78kSlnb8+tbLcXRRM="
+							"CodeSha256": "9n6+EONyhJ1SXOvhBlD6Mzt5RXxj7uDCzSuZd/4kLP4="
 						}
 					},
-					"AccountConfirmationLambdaVersionqEWgZ2ikt7N7AQ7QA9aLYWrE41N70Ojav88SdeAK4": {
+					"SignInLambdaVersionaeCoMQH0m8XbaeoDUlUAlSJsgti64Y3pv5uUDlvoc": {
+						"Type": "AWS::Lambda::Version",
+						"DeletionPolicy": "Retain",
+						"Properties": {
+							"FunctionName": {
+								"Ref": "SignInLambdaFunction"
+							},
+							"CodeSha256": "t5GkE4VkY6XhS9rcwZAQcRjWAyZGMu8h2bv1tngtVTg="
+						}
+					},
+					"AccountConfirmationLambdaVersionZ8YjyY6qLiUwcHvKAhEANsQC2KCUDG9qPi5ZzyV4PI": {
 						"Type": "AWS::Lambda::Version",
 						"DeletionPolicy": "Retain",
 						"Properties": {
 							"FunctionName": {
 								"Ref": "AccountConfirmationLambdaFunction"
 							},
-							"CodeSha256": "RVSj/WKSVhUFwto0mFsHXyLHuzzGO3uctwfLcSVw43I="
+							"CodeSha256": "YOpPq0MSGmPFuu7/CyI0f8RW/JJKA6wtPpVWEyC8RYU="
+						}
+					},
+					"SignUpLambdaVersionlJIMtKTGGsJjynsNDjtiEbSRROQ24ghDyLfYJ9XfvQ": {
+						"Type": "AWS::Lambda::Version",
+						"DeletionPolicy": "Retain",
+						"Properties": {
+							"FunctionName": {
+								"Ref": "SignUpLambdaFunction"
+							},
+							"CodeSha256": "ORVY0RgPFUq/xcUB3qnTKmFvRkxdLXQymvAdPLoJi9s="
 						}
 					},
 					"HttpApi": {
@@ -840,6 +864,62 @@
 							"AccessTokenValidity": 3,
 							"RefreshTokenValidity": 168
 						}
+					},
+					"WaiterAppTable": {
+						"Type": "AWS::DynamoDB::Table",
+						"Properties": {
+							"TableName": "WaiterAppTable",
+							"BillingMode": "PAY_PER_REQUEST",
+							"PointInTimeRecoverySpecification": {
+								"PointInTimeRecoveryEnabled": true
+							},
+							"AttributeDefinitions": [
+								{
+									"AttributeName": "PK",
+									"AttributeType": "S"
+								},
+								{
+									"AttributeName": "SK",
+									"AttributeType": "S"
+								},
+								{
+									"AttributeName": "GSI1PK",
+									"AttributeType": "S"
+								},
+								{
+									"AttributeName": "GSI1SK",
+									"AttributeType": "S"
+								}
+							],
+							"KeySchema": [
+								{
+									"AttributeName": "PK",
+									"KeyType": "HASH"
+								},
+								{
+									"AttributeName": "SK",
+									"KeyType": "RANGE"
+								}
+							],
+							"GlobalSecondaryIndexes": [
+								{
+									"IndexName": "GSI1PK-GSI1SK-index",
+									"KeySchema": [
+										{
+											"AttributeName": "GSI1PK",
+											"KeyType": "HASH"
+										},
+										{
+											"AttributeName": "GSI1SK",
+											"KeyType": "RANGE"
+										}
+									],
+									"Projection": {
+										"ProjectionType": "ALL"
+									}
+								}
+							]
+						}
 					}
 				},
 				"Outputs": {
@@ -852,34 +932,16 @@
 					"RefreshTokenLambdaFunctionQualifiedArn": {
 						"Description": "Current Lambda function version",
 						"Value": {
-							"Ref": "RefreshTokenLambdaVersion5VMb8SJNnY4tRNjLvBxSP0GuIL85S9oQnXvtewXavU"
+							"Ref": "RefreshTokenLambdaVersion16OF7UTcp7Ov4UiqY0RtktRHSWkeztvvw7Dhe1F5dM"
 						},
 						"Export": {
 							"Name": "sls-waiterapp-dev-RefreshTokenLambdaFunctionQualifiedArn"
 						}
 					},
-					"SignUpLambdaFunctionQualifiedArn": {
-						"Description": "Current Lambda function version",
-						"Value": {
-							"Ref": "SignUpLambdaVersionM9EZOShf4x95ke6pYbmD2zXA6i85YzAZkdYyrzJm7lU"
-						},
-						"Export": {
-							"Name": "sls-waiterapp-dev-SignUpLambdaFunctionQualifiedArn"
-						}
-					},
-					"SignInLambdaFunctionQualifiedArn": {
-						"Description": "Current Lambda function version",
-						"Value": {
-							"Ref": "SignInLambdaVersionWUgedujSZ6vNNo0nt1BOGM11f9bnWGsgcAtnkVPg"
-						},
-						"Export": {
-							"Name": "sls-waiterapp-dev-SignInLambdaFunctionQualifiedArn"
-						}
-					},
 					"ForgotPasswordLambdaFunctionQualifiedArn": {
 						"Description": "Current Lambda function version",
 						"Value": {
-							"Ref": "ForgotPasswordLambdaVersionxO4BYSJR9y40lbbdz1DNU16OimIbXOCa3oPEygeTrs"
+							"Ref": "ForgotPasswordLambdaVersionMJF5t940tklSxwRovIu3IiISumDX3MBbMrZ9JKhdM"
 						},
 						"Export": {
 							"Name": "sls-waiterapp-dev-ForgotPasswordLambdaFunctionQualifiedArn"
@@ -888,19 +950,37 @@
 					"ResetPasswordLambdaFunctionQualifiedArn": {
 						"Description": "Current Lambda function version",
 						"Value": {
-							"Ref": "ResetPasswordLambdaVersionf77Ep95uNRLpkxnoGKs139Z1l7nnn2NdvWvPiKQIA"
+							"Ref": "ResetPasswordLambdaVersionr7K0vsMsIRPtSRtujvzDdvIcD6dmlTJCWtZPXeBCPs"
 						},
 						"Export": {
 							"Name": "sls-waiterapp-dev-ResetPasswordLambdaFunctionQualifiedArn"
 						}
 					},
+					"SignInLambdaFunctionQualifiedArn": {
+						"Description": "Current Lambda function version",
+						"Value": {
+							"Ref": "SignInLambdaVersionaeCoMQH0m8XbaeoDUlUAlSJsgti64Y3pv5uUDlvoc"
+						},
+						"Export": {
+							"Name": "sls-waiterapp-dev-SignInLambdaFunctionQualifiedArn"
+						}
+					},
 					"AccountConfirmationLambdaFunctionQualifiedArn": {
 						"Description": "Current Lambda function version",
 						"Value": {
-							"Ref": "AccountConfirmationLambdaVersionqEWgZ2ikt7N7AQ7QA9aLYWrE41N70Ojav88SdeAK4"
+							"Ref": "AccountConfirmationLambdaVersionZ8YjyY6qLiUwcHvKAhEANsQC2KCUDG9qPi5ZzyV4PI"
 						},
 						"Export": {
 							"Name": "sls-waiterapp-dev-AccountConfirmationLambdaFunctionQualifiedArn"
+						}
+					},
+					"SignUpLambdaFunctionQualifiedArn": {
+						"Description": "Current Lambda function version",
+						"Value": {
+							"Ref": "SignUpLambdaVersionlJIMtKTGGsJjynsNDjtiEbSRROQ24ghDyLfYJ9XfvQ"
+						},
+						"Export": {
+							"Name": "sls-waiterapp-dev-SignUpLambdaFunctionQualifiedArn"
 						}
 					},
 					"HttpApiId": {
@@ -978,7 +1058,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "SignUpLambdaVersionM9EZOShf4x95ke6pYbmD2zXA6i85YzAZkdYyrzJm7lU"
+				"versionLogicalId": "SignUpLambdaVersionlJIMtKTGGsJjynsNDjtiEbSRROQ24ghDyLfYJ9XfvQ"
 			},
 			"accountConfirmation": {
 				"handler": "src/server/functions/auth/accountConfirmation.handler",
@@ -1003,7 +1083,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "AccountConfirmationLambdaVersionqEWgZ2ikt7N7AQ7QA9aLYWrE41N70Ojav88SdeAK4"
+				"versionLogicalId": "AccountConfirmationLambdaVersionZ8YjyY6qLiUwcHvKAhEANsQC2KCUDG9qPi5ZzyV4PI"
 			},
 			"signIn": {
 				"handler": "src/server/functions/auth/signIn.handler",
@@ -1028,7 +1108,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "SignInLambdaVersionWUgedujSZ6vNNo0nt1BOGM11f9bnWGsgcAtnkVPg"
+				"versionLogicalId": "SignInLambdaVersionaeCoMQH0m8XbaeoDUlUAlSJsgti64Y3pv5uUDlvoc"
 			},
 			"refreshToken": {
 				"handler": "src/server/functions/auth/refreshToken.handler",
@@ -1053,7 +1133,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "RefreshTokenLambdaVersion5VMb8SJNnY4tRNjLvBxSP0GuIL85S9oQnXvtewXavU"
+				"versionLogicalId": "RefreshTokenLambdaVersion16OF7UTcp7Ov4UiqY0RtktRHSWkeztvvw7Dhe1F5dM"
 			},
 			"forgotPassword": {
 				"handler": "src/server/functions/auth/forgotPassword.handler",
@@ -1078,7 +1158,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "ForgotPasswordLambdaVersionxO4BYSJR9y40lbbdz1DNU16OimIbXOCa3oPEygeTrs"
+				"versionLogicalId": "ForgotPasswordLambdaVersionMJF5t940tklSxwRovIu3IiISumDX3MBbMrZ9JKhdM"
 			},
 			"resetPassword": {
 				"handler": "src/server/functions/auth/resetPassword.handler",
@@ -1103,7 +1183,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "ResetPasswordLambdaVersionf77Ep95uNRLpkxnoGKs139Z1l7nnn2NdvWvPiKQIA"
+				"versionLogicalId": "ResetPasswordLambdaVersionr7K0vsMsIRPtSRtujvzDdvIcD6dmlTJCWtZPXeBCPs"
 			}
 		},
 		"resources": {
@@ -1170,6 +1250,62 @@
 						"AccessTokenValidity": 3,
 						"RefreshTokenValidity": 168
 					}
+				},
+				"WaiterAppTable": {
+					"Type": "AWS::DynamoDB::Table",
+					"Properties": {
+						"TableName": "WaiterAppTable",
+						"BillingMode": "PAY_PER_REQUEST",
+						"PointInTimeRecoverySpecification": {
+							"PointInTimeRecoveryEnabled": true
+						},
+						"AttributeDefinitions": [
+							{
+								"AttributeName": "PK",
+								"AttributeType": "S"
+							},
+							{
+								"AttributeName": "SK",
+								"AttributeType": "S"
+							},
+							{
+								"AttributeName": "GSI1PK",
+								"AttributeType": "S"
+							},
+							{
+								"AttributeName": "GSI1SK",
+								"AttributeType": "S"
+							}
+						],
+						"KeySchema": [
+							{
+								"AttributeName": "PK",
+								"KeyType": "HASH"
+							},
+							{
+								"AttributeName": "SK",
+								"KeyType": "RANGE"
+							}
+						],
+						"GlobalSecondaryIndexes": [
+							{
+								"IndexName": "GSI1PK-GSI1SK-index",
+								"KeySchema": [
+									{
+										"AttributeName": "GSI1PK",
+										"KeyType": "HASH"
+									},
+									{
+										"AttributeName": "GSI1SK",
+										"KeyType": "RANGE"
+									}
+								],
+								"Projection": {
+									"ProjectionType": "ALL"
+								}
+							}
+						]
+					}
 				}
 			},
 			"Outputs": {}
@@ -1183,7 +1319,7 @@
 				"individually": true,
 				"artifactsS3KeyDirname": "serverless/waiterapp/dev/code-artifacts",
 				"deploymentBucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-				"artifactDirectoryName": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z"
+				"artifactDirectoryName": "serverless/waiterapp/dev/1728474810282-2024-10-09T11:53:30.282Z"
 			},
 			"provider": {
 				"$ref": "$[\"service\"][\"provider\"]"
@@ -1204,7 +1340,7 @@
 	},
 	"package": {
 		"individually": true,
-		"artifactDirectoryName": "serverless/waiterapp/dev/1728471525654-2024-10-09T10:58:45.654Z",
+		"artifactDirectoryName": "serverless/waiterapp/dev/1728474810282-2024-10-09T11:53:30.282Z",
 		"artifact": ""
 	}
 }
