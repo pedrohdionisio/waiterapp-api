@@ -116,12 +116,12 @@ resources:
             Projection:
               ProjectionType: ALL
 functions:
-  signUp:
-    handler: src/server/functions/auth/signUp.handler
+  createUser:
+    handler: src/server/functions/users/createUser.handler
     events:
       - httpApi:
           method: POST
-          path: /auth/sign-up
+          path: /users/create
   accountConfirmation:
     handler: src/server/functions/auth/accountConfirmation.handler
     events:

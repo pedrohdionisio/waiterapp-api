@@ -1,5 +1,5 @@
-import { SignUpSchema } from '@/app/modules/auth/schemas';
-import type { ISignUpService } from '@/app/modules/auth/services/sign-up/SignUpService.types';
+import { CreateUserSchema } from '@/app/modules/users/schemas';
+import type { ICreateUserService } from '@/app/modules/users/services/create-user/CreateUserService.types';
 import type { IController, IRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import {
@@ -7,12 +7,12 @@ import {
 	UsernameExistsException
 } from '@aws-sdk/client-cognito-identity-provider';
 
-export class SignUpController implements IController {
-	constructor(private readonly signUpService: ISignUpService) {}
+export class CreateUserController implements IController {
+	constructor(private readonly createUserService: ICreateUserService) {}
 
 	async handle(request: IRequest): Promise<IResponse> {
 		try {
-			const parsedBody = parseSchema(SignUpSchema, request.body);
+			const parsedBody = parseSchema(CreateUserSchema, request.body);
 
 			if (!parsedBody.success) {
 				return {
@@ -21,7 +21,7 @@ export class SignUpController implements IController {
 				};
 			}
 
-			await this.signUpService.execute(parsedBody.data);
+			await this.createUserService.execute(parsedBody.data);
 
 			return {
 				body: null,

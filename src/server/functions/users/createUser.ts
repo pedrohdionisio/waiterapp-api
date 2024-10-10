@@ -1,4 +1,4 @@
-import { makeSignUpController } from '@/factories/controllers/auth';
+import { makeCreateUserController } from '@/factories/controllers/users';
 import {
 	type ILambdaResponse,
 	requestAdapter,
@@ -9,7 +9,7 @@ import type { APIGatewayProxyEventV2 } from 'aws-lambda';
 export async function handler(
 	event: APIGatewayProxyEventV2
 ): Promise<ILambdaResponse> {
-	const controller = makeSignUpController();
+	const controller = makeCreateUserController();
 
 	const response = await controller.handle(requestAdapter(event));
 
