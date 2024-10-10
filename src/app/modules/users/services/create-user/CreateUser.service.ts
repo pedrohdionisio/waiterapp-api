@@ -5,9 +5,9 @@ import type {
 } from './CreateUserService.types';
 
 export class CreateUserService implements ICreateUserService {
-	constructor(private readonly authRepository: IUsersRepository) {}
+	constructor(private readonly usersRepository: IUsersRepository) {}
 
 	async execute(input: CreateUserInputType): Promise<void> {
-		await this.authRepository.create(input);
+		await this.usersRepository.create(input);
 	}
 }

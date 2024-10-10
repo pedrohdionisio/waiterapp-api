@@ -7,6 +7,12 @@ export interface ICreateUserDTO {
 	role: UserRoleType;
 }
 
+export interface IDeleteUserDTO {
+	email: string;
+	userId: string;
+}
+
 export interface IUsersRepository {
 	create(dto: ICreateUserDTO): Promise<void>;
+	delete(dto: IDeleteUserDTO): Promise<void>;
 }

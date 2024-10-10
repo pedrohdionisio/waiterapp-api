@@ -207,12 +207,12 @@ var require_index_umd = __commonJS({
   }
 });
 
-// src/server/functions/users/createUser.ts
-var createUser_exports = {};
-__export(createUser_exports, {
+// src/server/functions/users/deleteUser.ts
+var deleteUser_exports = {};
+__export(deleteUser_exports, {
   handler: () => handler
 });
-module.exports = __toCommonJS(createUser_exports);
+module.exports = __toCommonJS(deleteUser_exports);
 
 // node_modules/zod/lib/index.mjs
 var util;
@@ -4187,26 +4187,29 @@ function addPrefix(prefix, value) {
 
 // src/app/modules/users/controllers/create-user/CreateUser.controller.ts
 var import_client_cognito_identity_provider = require("@aws-sdk/client-cognito-identity-provider");
-var CreateUserController = class {
-  constructor(createUserService) {
-    this.createUserService = createUserService;
+
+// src/app/modules/users/controllers/delete-user/DeleteUser.controller.ts
+var import_client_cognito_identity_provider2 = require("@aws-sdk/client-cognito-identity-provider");
+var DeleteUserController = class {
+  constructor(deleteUserService) {
+    this.deleteUserService = deleteUserService;
   }
   async handle(request) {
     try {
-      const parsedBody = parseSchema(CreateUserSchema, request.body);
+      const parsedBody = parseSchema(DeleteUserSchema, request.body);
       if (!parsedBody.success) {
         return {
           body: parsedBody.data.message,
           statusCode: parsedBody.data.statusCode
         };
       }
-      await this.createUserService.execute(parsedBody.data);
+      await this.deleteUserService.execute(parsedBody.data);
       return {
         body: null,
-        statusCode: 201
+        statusCode: 204
       };
     } catch (error) {
-      if (error instanceof import_client_cognito_identity_provider.UsernameExistsException) {
+      if (error instanceof import_client_cognito_identity_provider2.UsernameExistsException) {
         return {
           statusCode: 409,
           body: {
@@ -4214,7 +4217,7 @@ var CreateUserController = class {
           }
         };
       }
-      if (error instanceof import_client_cognito_identity_provider.NotAuthorizedException) {
+      if (error instanceof import_client_cognito_identity_provider2.NotAuthorizedException) {
         return {
           statusCode: 401,
           body: {
@@ -4232,16 +4235,13 @@ var CreateUserController = class {
   }
 };
 
-// src/app/modules/users/controllers/delete-user/DeleteUser.controller.ts
-var import_client_cognito_identity_provider2 = require("@aws-sdk/client-cognito-identity-provider");
-
-// src/app/modules/users/services/create-user/CreateUser.service.ts
-var CreateUserService = class {
+// src/app/modules/users/services/delete-user/DeleteUser.service.ts
+var DeleteUserService = class {
   constructor(usersRepository) {
     this.usersRepository = usersRepository;
   }
   async execute(input) {
-    await this.usersRepository.create(input);
+    await this.usersRepository.delete(input);
   }
 };
 
@@ -4322,14 +4322,14 @@ function makeUsersRepository() {
   return new UsersRepository(cognitoClient, dynamoClient);
 }
 
-// src/factories/services/users/makeCreateUserService.factory.ts
-function makeCreateUserService() {
-  return new CreateUserService(makeUsersRepository());
+// src/factories/services/users/makeDeleteUserService.factory.ts
+function makeDeleteUserService() {
+  return new DeleteUserService(makeUsersRepository());
 }
 
-// src/factories/controllers/users/makeCreateUsersController.factory.ts
-function makeCreateUserController() {
-  return new CreateUserController(makeCreateUserService());
+// src/factories/controllers/users/makeDeleteUserController.factory.ts
+function makeDeleteUserController() {
+  return new DeleteUserController(makeDeleteUserService());
 }
 
 // src/server/adapters/request.adapter.ts
@@ -4356,9 +4356,9 @@ function responseAdapter(response) {
   };
 }
 
-// src/server/functions/users/createUser.ts
+// src/server/functions/users/deleteUser.ts
 async function handler(event) {
-  const controller = makeCreateUserController();
+  const controller = makeDeleteUserController();
   const response = await controller.handle(requestAdapter(event));
   return responseAdapter(response);
 }
@@ -4366,4 +4366,4 @@ async function handler(event) {
 0 && (module.exports = {
   handler
 });
-//# sourceMappingURL=createUser.js.map
+//# sourceMappingURL=deleteUser.js.map

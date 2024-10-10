@@ -12,6 +12,7 @@ provider:
   architecture: arm64
   environment:
     COGNITO_CLIENT_ID: !Ref WaiterAppUserPoolClient
+    COGNITO_USER_POOL_ID: !Ref WaiterAppUserPool
   iam:
     role:
       statements:
@@ -24,7 +25,19 @@ provider:
             - dynamodb:Query
           Resource:
             - !GetAtt WaiterAppTable.Arn
-
+        - Effect: Allow
+          Action:
+            - cognito-idp:AdminDeleteUser
+          Resource:
+            - !GetAtt WaiterAppUserPool.Arn
+  httpApi:
+    authorizers:
+      CognitoAuthorizer:
+        type: jwt
+        identitySource: $request.header.Authorization
+        issuerUrl: !GetAtt WaiterAppUserPool.ProviderURL
+        audience:
+          - !Ref WaiterAppUserPoolClient
 custom:
   bundle: true
   minify: true
@@ -116,12 +129,6 @@ resources:
             Projection:
               ProjectionType: ALL
 functions:
-  createUser:
-    handler: src/server/functions/users/createUser.handler
-    events:
-      - httpApi:
-          method: POST
-          path: /users/create
   accountConfirmation:
     handler: src/server/functions/auth/accountConfirmation.handler
     events:
@@ -152,4 +159,20 @@ functions:
       - httpApi:
           method: POST
           path: /auth/reset-password
+  createUser:
+    handler: src/server/functions/users/createUser.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /users/create
+          authorizer:
+            name: CognitoAuthorizer
+  deleteUser:
+    handler: src/server/functions/users/deleteUser.handler
+    events:
+      - httpApi:
+          method: DELETE
+          path: /users/delete
+          authorizer:
+            name: CognitoAuthorizer
 

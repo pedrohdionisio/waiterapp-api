@@ -1,7 +1,12 @@
 import type { IRequest } from '@/app/types';
-import type { APIGatewayProxyEventV2 } from 'aws-lambda';
+import type {
+	APIGatewayProxyEventV2,
+	APIGatewayProxyEventV2WithJWTAuthorizer
+} from 'aws-lambda';
 
-export function requestAdapter(event: APIGatewayProxyEventV2): IRequest {
+export function requestAdapter(
+	event: APIGatewayProxyEventV2 | APIGatewayProxyEventV2WithJWTAuthorizer
+): IRequest {
 	const request = {
 		body: JSON.parse(event.body || '{}'),
 		params: event.pathParameters || {},
