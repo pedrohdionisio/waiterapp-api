@@ -24,7 +24,8 @@ provider:
             - dynamodb:UpdateItem
             - dynamodb:Query
           Resource:
-            - !GetAtt WaiterAppTable.Arn
+            - !Sub "${WaiterAppTable.Arn}"
+            - !Sub "${WaiterAppTable.Arn}/index/*"
         - Effect: Allow
           Action:
             - cognito-idp:AdminDeleteUser
@@ -164,7 +165,7 @@ functions:
     events:
       - httpApi:
           method: POST
-          path: /users/create
+          path: /users
           authorizer:
             name: CognitoAuthorizer
   deleteUser:
@@ -172,7 +173,15 @@ functions:
     events:
       - httpApi:
           method: DELETE
-          path: /users/delete
+          path: /users
+          authorizer:
+            name: CognitoAuthorizer
+  listUsers:
+    handler: src/server/functions/users/listUsers.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /users
           authorizer:
             name: CognitoAuthorizer
 

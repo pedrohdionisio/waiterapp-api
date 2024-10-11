@@ -4188,8 +4188,11 @@ function addPrefix(prefix, value) {
 // src/app/modules/users/controllers/create-user/CreateUser.controller.ts
 var import_client_cognito_identity_provider = require("@aws-sdk/client-cognito-identity-provider");
 
-// src/app/modules/users/controllers/delete-user/DeleteUser.controller.ts
+// src/app/modules/users/controllers/list-users/ListUsers.controller.ts
 var import_client_cognito_identity_provider2 = require("@aws-sdk/client-cognito-identity-provider");
+
+// src/app/modules/users/controllers/delete-user/DeleteUser.controller.ts
+var import_client_cognito_identity_provider3 = require("@aws-sdk/client-cognito-identity-provider");
 var DeleteUserController = class {
   constructor(deleteUserService) {
     this.deleteUserService = deleteUserService;
@@ -4209,15 +4212,15 @@ var DeleteUserController = class {
         statusCode: 204
       };
     } catch (error) {
-      if (error instanceof import_client_cognito_identity_provider2.UsernameExistsException) {
+      if (error instanceof import_client_cognito_identity_provider3.UserNotFoundException) {
         return {
-          statusCode: 409,
+          statusCode: 404,
           body: {
-            error: "This e-mail is already in use."
+            error: "User not found."
           }
         };
       }
-      if (error instanceof import_client_cognito_identity_provider2.NotAuthorizedException) {
+      if (error instanceof import_client_cognito_identity_provider3.NotAuthorizedException) {
         return {
           statusCode: 401,
           body: {
@@ -4246,7 +4249,7 @@ var DeleteUserService = class {
 };
 
 // src/app/database/repositories/users/Users.repository.ts
-var import_client_cognito_identity_provider3 = require("@aws-sdk/client-cognito-identity-provider");
+var import_client_cognito_identity_provider4 = require("@aws-sdk/client-cognito-identity-provider");
 var import_lib_dynamodb = require("@aws-sdk/lib-dynamodb");
 var import_ulid = __toESM(require_index_umd());
 var UsersRepository = class {
@@ -4255,7 +4258,7 @@ var UsersRepository = class {
     this.dynamoClient = dynamoClient2;
   }
   async create(dto) {
-    const cognitoCommand = new import_client_cognito_identity_provider3.SignUpCommand({
+    const cognitoCommand = new import_client_cognito_identity_provider4.SignUpCommand({
       ClientId: process.env.COGNITO_CLIENT_ID,
       Username: dto.email,
       Password: dto.password,
@@ -4284,6 +4287,7 @@ var UsersRepository = class {
         name: dto.name,
         role: dto.role,
         externalId: UserSub,
+        email: dto.email,
         createdAt: (/* @__PURE__ */ new Date()).toISOString(),
         deletedAt: (/* @__PURE__ */ new Date()).toISOString()
       }
@@ -4291,7 +4295,7 @@ var UsersRepository = class {
     await this.dynamoClient.send(dynamoCommand);
   }
   async delete(dto) {
-    const cognitoCommand = new import_client_cognito_identity_provider3.AdminDeleteUserCommand({
+    const cognitoCommand = new import_client_cognito_identity_provider4.AdminDeleteUserCommand({
       UserPoolId: process.env.COGNITO_USER_POOL_ID,
       Username: dto.email
     });
@@ -4305,11 +4309,39 @@ var UsersRepository = class {
     });
     await this.dynamoClient.send(dynamoCommand);
   }
+  async list() {
+    const command = new import_lib_dynamodb.QueryCommand({
+      TableName: "WaiterAppTable",
+      ScanIndexForward: false,
+      IndexName: "GSI1PK-GSI1SK-index",
+      KeyConditionExpression: "#DDB_GSI1PK = :pkey",
+      ExpressionAttributeValues: {
+        ":pkey": "USERS"
+      },
+      ExpressionAttributeNames: {
+        "#DDB_GSI1PK": "GSI1PK"
+      },
+      Limit: 100
+    });
+    const { Items } = await this.dynamoClient.send(command);
+    if (!Items) {
+      return [];
+    }
+    return Items.map((item) => {
+      return {
+        name: item.name,
+        email: item.email,
+        externalId: item.externalId,
+        id: item.id,
+        role: item.role
+      };
+    });
+  }
 };
 
 // src/app/libs/cognitoClient.ts
-var import_client_cognito_identity_provider4 = require("@aws-sdk/client-cognito-identity-provider");
-var cognitoClient = new import_client_cognito_identity_provider4.CognitoIdentityProviderClient();
+var import_client_cognito_identity_provider5 = require("@aws-sdk/client-cognito-identity-provider");
+var cognitoClient = new import_client_cognito_identity_provider5.CognitoIdentityProviderClient();
 
 // src/app/libs/dynamoClient.ts
 var import_client_dynamodb = require("@aws-sdk/client-dynamodb");

@@ -207,12 +207,12 @@ var require_index_umd = __commonJS({
   }
 });
 
-// src/server/functions/users/createUser.ts
-var createUser_exports = {};
-__export(createUser_exports, {
+// src/server/functions/users/listUsers.ts
+var listUsers_exports = {};
+__export(listUsers_exports, {
   handler: () => handler
 });
-module.exports = __toCommonJS(createUser_exports);
+module.exports = __toCommonJS(listUsers_exports);
 
 // node_modules/zod/lib/index.mjs
 var util;
@@ -4142,35 +4142,6 @@ var DeleteUserSchema = z.object({
   email: z.string().email()
 });
 
-// src/app/errors/zod.error.ts
-var ZodError2 = class {
-  constructor(error) {
-    this.message = error.errors.map((error2) => {
-      return {
-        field: error2.path.map((path) => path.toString()).join("-"),
-        message: error2.message
-      };
-    });
-    this.statusCode = 422;
-  }
-};
-
-// src/app/utils/parseSchema.util.ts
-function parseSchema(schema, body) {
-  const result = schema.safeParse(body);
-  if (!result.success) {
-    const error = new ZodError2(result.error);
-    return {
-      success: false,
-      data: error
-    };
-  }
-  return {
-    success: true,
-    data: result.data
-  };
-}
-
 // src/app/constants/prefixes.constant.ts
 var prefixes = {
   user: "USER#",
@@ -4187,26 +4158,22 @@ function addPrefix(prefix, value) {
 
 // src/app/modules/users/controllers/create-user/CreateUser.controller.ts
 var import_client_cognito_identity_provider = require("@aws-sdk/client-cognito-identity-provider");
-var CreateUserController = class {
-  constructor(createUserService) {
-    this.createUserService = createUserService;
+
+// src/app/modules/users/controllers/list-users/ListUsers.controller.ts
+var import_client_cognito_identity_provider2 = require("@aws-sdk/client-cognito-identity-provider");
+var ListUsersController = class {
+  constructor(listUsersService) {
+    this.listUsersService = listUsersService;
   }
-  async handle(request) {
+  async handle() {
     try {
-      const parsedBody = parseSchema(CreateUserSchema, request.body);
-      if (!parsedBody.success) {
-        return {
-          body: parsedBody.data.message,
-          statusCode: parsedBody.data.statusCode
-        };
-      }
-      await this.createUserService.execute(parsedBody.data);
+      const response = await this.listUsersService.execute();
       return {
-        body: null,
+        body: { ...response },
         statusCode: 201
       };
     } catch (error) {
-      if (error instanceof import_client_cognito_identity_provider.UsernameExistsException) {
+      if (error instanceof import_client_cognito_identity_provider2.UsernameExistsException) {
         return {
           statusCode: 409,
           body: {
@@ -4214,7 +4181,7 @@ var CreateUserController = class {
           }
         };
       }
-      if (error instanceof import_client_cognito_identity_provider.NotAuthorizedException) {
+      if (error instanceof import_client_cognito_identity_provider2.NotAuthorizedException) {
         return {
           statusCode: 401,
           body: {
@@ -4232,19 +4199,17 @@ var CreateUserController = class {
   }
 };
 
-// src/app/modules/users/controllers/list-users/ListUsers.controller.ts
-var import_client_cognito_identity_provider2 = require("@aws-sdk/client-cognito-identity-provider");
-
 // src/app/modules/users/controllers/delete-user/DeleteUser.controller.ts
 var import_client_cognito_identity_provider3 = require("@aws-sdk/client-cognito-identity-provider");
 
-// src/app/modules/users/services/create-user/CreateUser.service.ts
-var CreateUserService = class {
+// src/app/modules/users/services/list-users/ListUsers.service.ts
+var ListUsersService = class {
   constructor(usersRepository) {
     this.usersRepository = usersRepository;
   }
-  async execute(input) {
-    await this.usersRepository.create(input);
+  async execute() {
+    const response = await this.usersRepository.list();
+    return response;
   }
 };
 
@@ -4354,14 +4319,14 @@ function makeUsersRepository() {
   return new UsersRepository(cognitoClient, dynamoClient);
 }
 
-// src/factories/services/users/makeCreateUserService.factory.ts
-function makeCreateUserService() {
-  return new CreateUserService(makeUsersRepository());
+// src/factories/services/users/makeListUsersService.factory.ts
+function makeListUsersService() {
+  return new ListUsersService(makeUsersRepository());
 }
 
-// src/factories/controllers/users/makeCreateUsersController.factory.ts
-function makeCreateUserController() {
-  return new CreateUserController(makeCreateUserService());
+// src/factories/controllers/users/makeListUsersController.factory.ts
+function makeListUsersController() {
+  return new ListUsersController(makeListUsersService());
 }
 
 // src/server/adapters/request.adapter.ts
@@ -4388,9 +4353,9 @@ function responseAdapter(response) {
   };
 }
 
-// src/server/functions/users/createUser.ts
+// src/server/functions/users/listUsers.ts
 async function handler(event) {
-  const controller = makeCreateUserController();
+  const controller = makeListUsersController();
   const response = await controller.handle(requestAdapter(event));
   return responseAdapter(response);
 }
@@ -4398,4 +4363,4 @@ async function handler(event) {
 0 && (module.exports = {
   handler
 });
-//# sourceMappingURL=createUser.js.map
+//# sourceMappingURL=listUsers.js.map

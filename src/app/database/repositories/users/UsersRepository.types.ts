@@ -1,4 +1,4 @@
-import type { UserRoleType } from '@/app/entities';
+import type { IUser, UserRoleType } from '@/app/entities';
 
 export interface ICreateUserDTO {
 	name: string;
@@ -15,4 +15,5 @@ export interface IDeleteUserDTO {
 export interface IUsersRepository {
 	create(dto: ICreateUserDTO): Promise<void>;
 	delete(dto: IDeleteUserDTO): Promise<void>;
+	list(): Promise<IUser[]>;
 }

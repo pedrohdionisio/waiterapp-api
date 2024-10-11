@@ -32,7 +32,10 @@
 							],
 							"Resource": [
 								{
-									"Fn::GetAtt": ["WaiterAppTable", "Arn"]
+									"Fn::Sub": "${WaiterAppTable.Arn}"
+								},
+								{
+									"Fn::Sub": "${WaiterAppTable.Arn}/index/*"
 								}
 							]
 						},
@@ -112,6 +115,12 @@
 							"LogGroupName": "/aws/lambda/waiterapp-dev-deleteUser"
 						}
 					},
+					"ListUsersLogGroup": {
+						"Type": "AWS::Logs::LogGroup",
+						"Properties": {
+							"LogGroupName": "/aws/lambda/waiterapp-dev-listUsers"
+						}
+					},
 					"IamRoleLambdaExecution": {
 						"Type": "AWS::IAM::Role",
 						"Properties": {
@@ -188,7 +197,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728582949322-2024-10-10T17:55:49.322Z/waiterapp-accountConfirmation.zip"
+								"S3Key": "serverless/waiterapp/dev/1728645681059-2024-10-11T11:21:21.059Z/waiterapp-accountConfirmation.zip"
 							},
 							"Handler": "src/server/functions/auth/accountConfirmation.handler",
 							"Runtime": "nodejs20.x",
@@ -218,7 +227,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728582949322-2024-10-10T17:55:49.322Z/waiterapp-signIn.zip"
+								"S3Key": "serverless/waiterapp/dev/1728645681059-2024-10-11T11:21:21.059Z/waiterapp-signIn.zip"
 							},
 							"Handler": "src/server/functions/auth/signIn.handler",
 							"Runtime": "nodejs20.x",
@@ -248,7 +257,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728582949322-2024-10-10T17:55:49.322Z/waiterapp-refreshToken.zip"
+								"S3Key": "serverless/waiterapp/dev/1728645681059-2024-10-11T11:21:21.059Z/waiterapp-refreshToken.zip"
 							},
 							"Handler": "src/server/functions/auth/refreshToken.handler",
 							"Runtime": "nodejs20.x",
@@ -278,7 +287,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728582949322-2024-10-10T17:55:49.322Z/waiterapp-forgotPassword.zip"
+								"S3Key": "serverless/waiterapp/dev/1728645681059-2024-10-11T11:21:21.059Z/waiterapp-forgotPassword.zip"
 							},
 							"Handler": "src/server/functions/auth/forgotPassword.handler",
 							"Runtime": "nodejs20.x",
@@ -308,7 +317,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728582949322-2024-10-10T17:55:49.322Z/waiterapp-resetPassword.zip"
+								"S3Key": "serverless/waiterapp/dev/1728645681059-2024-10-11T11:21:21.059Z/waiterapp-resetPassword.zip"
 							},
 							"Handler": "src/server/functions/auth/resetPassword.handler",
 							"Runtime": "nodejs20.x",
@@ -338,7 +347,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728582949322-2024-10-10T17:55:49.322Z/waiterapp-createUser.zip"
+								"S3Key": "serverless/waiterapp/dev/1728645681059-2024-10-11T11:21:21.059Z/waiterapp-createUser.zip"
 							},
 							"Handler": "src/server/functions/users/createUser.handler",
 							"Runtime": "nodejs20.x",
@@ -368,7 +377,7 @@
 						"Properties": {
 							"Code": {
 								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-								"S3Key": "serverless/waiterapp/dev/1728582949322-2024-10-10T17:55:49.322Z/waiterapp-deleteUser.zip"
+								"S3Key": "serverless/waiterapp/dev/1728645681059-2024-10-11T11:21:21.059Z/waiterapp-deleteUser.zip"
 							},
 							"Handler": "src/server/functions/users/deleteUser.handler",
 							"Runtime": "nodejs20.x",
@@ -393,74 +402,114 @@
 						},
 						"DependsOn": ["DeleteUserLogGroup"]
 					},
-					"RefreshTokenLambdaVersionX9cOia9OJIuJ2LpXllOWool5bptsJ0LND5H01c": {
+					"ListUsersLambdaFunction": {
+						"Type": "AWS::Lambda::Function",
+						"Properties": {
+							"Code": {
+								"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+								"S3Key": "serverless/waiterapp/dev/1728645681059-2024-10-11T11:21:21.059Z/waiterapp-listUsers.zip"
+							},
+							"Handler": "src/server/functions/users/listUsers.handler",
+							"Runtime": "nodejs20.x",
+							"FunctionName": "waiterapp-dev-listUsers",
+							"MemorySize": 1024,
+							"Timeout": 6,
+							"Architectures": ["arm64"],
+							"Environment": {
+								"Variables": {
+									"COGNITO_CLIENT_ID": {
+										"$ref": "$[\"service\"][\"provider\"][\"environment\"][\"COGNITO_CLIENT_ID\"]"
+									},
+									"COGNITO_USER_POOL_ID": {
+										"$ref": "$[\"service\"][\"provider\"][\"environment\"][\"COGNITO_USER_POOL_ID\"]"
+									},
+									"NODE_OPTIONS": "--enable-source-maps"
+								}
+							},
+							"Role": {
+								"Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+							}
+						},
+						"DependsOn": ["ListUsersLogGroup"]
+					},
+					"RefreshTokenLambdaVersionxRyn3jfbsMbLMKfI59AkzAVIKgR0kZftTxDeQDRdQ": {
 						"Type": "AWS::Lambda::Version",
 						"DeletionPolicy": "Retain",
 						"Properties": {
 							"FunctionName": {
 								"Ref": "RefreshTokenLambdaFunction"
 							},
-							"CodeSha256": "F3CKv4+YqaJ2YRne5T/i1V213kXYyDco/rCZsc8pRKU="
+							"CodeSha256": "Oiq5uC8cDppokrkrcG9Ez+hknCt9MBfg2stWMDn9LFQ="
 						}
 					},
-					"ForgotPasswordLambdaVersioncwHPOmDwo3pKKOTTDoInF7iiwrS0tj69OUSHOndCI4": {
+					"ForgotPasswordLambdaVersionRYpIdbuUyLS0oK2UVWyxDGmbMi9tmbOPIaGSKKqa0": {
 						"Type": "AWS::Lambda::Version",
 						"DeletionPolicy": "Retain",
 						"Properties": {
 							"FunctionName": {
 								"Ref": "ForgotPasswordLambdaFunction"
 							},
-							"CodeSha256": "IsmBOi9zQ2KTr9rGyaMthpFy90AylbdJfyyrWAx5QMQ="
+							"CodeSha256": "ThyVBpG5Qfv/dfBd+k2M1XNgnzcTm6WC5neU/WEZ6Ls="
 						}
 					},
-					"AccountConfirmationLambdaVersionRUFi1rZQwRefC2UhqipHX56dYkZGPdkEMblYpVinZ8": {
+					"AccountConfirmationLambdaVersionEZcLgjE3yrqIVaeYMgfEzRJv9JSiRCVe74p6ZibeJgI": {
 						"Type": "AWS::Lambda::Version",
 						"DeletionPolicy": "Retain",
 						"Properties": {
 							"FunctionName": {
 								"Ref": "AccountConfirmationLambdaFunction"
 							},
-							"CodeSha256": "KDMhX/v4yYSj9LInWexSZ2bpeFSZvVOZgpvXFCtRhqw="
+							"CodeSha256": "CTAeuVTotdhXE/QtZoHhwhVrOGu3VgIGyoa1sb6HdZM="
 						}
 					},
-					"ResetPasswordLambdaVersionkeVcweDbG3jPT4eKCoVg8LHyO3PFask50EMc7MS78": {
+					"ResetPasswordLambdaVersionPHPrZNyFnx859GmjJoNCmdN5OKlZWCwLGKc6Di270": {
 						"Type": "AWS::Lambda::Version",
 						"DeletionPolicy": "Retain",
 						"Properties": {
 							"FunctionName": {
 								"Ref": "ResetPasswordLambdaFunction"
 							},
-							"CodeSha256": "OpG2qB0bVg2LHswHrzTmoMJjqpAdwFOIR15ZX3tXqzs="
+							"CodeSha256": "fNcf7S8AgkDbxlZyNYt0VIiBYi6WatYitDP4tD6+ruo="
 						}
 					},
-					"CreateUserLambdaVersionoqQjfrJd0NnkV2bbLcrs2rJqnwZU03wGD3n8tK9pSIY": {
-						"Type": "AWS::Lambda::Version",
-						"DeletionPolicy": "Retain",
-						"Properties": {
-							"FunctionName": {
-								"Ref": "CreateUserLambdaFunction"
-							},
-							"CodeSha256": "kN9c5oxRFrBA4HQSNgIv3uV0fT5or4qkNtxsaE8/vpk="
-						}
-					},
-					"DeleteUserLambdaVersionHchJX9vPtYXI27PRLVdsTbUL57TurzwjC8mBa6TgXww": {
+					"DeleteUserLambdaVersionzH0RomG1Gwo6NCwt4thoGFTcBrEfbHwo0UMHoxMomKI": {
 						"Type": "AWS::Lambda::Version",
 						"DeletionPolicy": "Retain",
 						"Properties": {
 							"FunctionName": {
 								"Ref": "DeleteUserLambdaFunction"
 							},
-							"CodeSha256": "KWxQu2So+lrn6BJ+6SZs/5F2gEooIcm9KEceD9xiKcg="
+							"CodeSha256": "UVLw9p5qH74imoq3shzlr4zTh1dc2wN6hfNV0AcsRhw="
 						}
 					},
-					"SignInLambdaVersion13MQDf9ulzMIoE8MsjTcYpPGGE62RDc4UnQjBICZUo": {
+					"CreateUserLambdaVersionvjjnu8zwQfMVqEW1DC7vTOGgE1KUaIKv3EBGeEN0ek": {
+						"Type": "AWS::Lambda::Version",
+						"DeletionPolicy": "Retain",
+						"Properties": {
+							"FunctionName": {
+								"Ref": "CreateUserLambdaFunction"
+							},
+							"CodeSha256": "2H+MVtTyIICurKDI93CE7d/30ME7bq5V2AvwvgDSzgU="
+						}
+					},
+					"ListUsersLambdaVersionGpa4flRLBBM0bm9VnXNK5epYnbb9Aud4nvbKmuBvqE": {
+						"Type": "AWS::Lambda::Version",
+						"DeletionPolicy": "Retain",
+						"Properties": {
+							"FunctionName": {
+								"Ref": "ListUsersLambdaFunction"
+							},
+							"CodeSha256": "p3D6Qjrke3zo4K28aBwh+2ql0dv8OQ5X1VBFqqh9K2M="
+						}
+					},
+					"SignInLambdaVersiono0bjgVJIlF2K3qyGPCTQHNVLB6VPhNr3Qp5vDWRIneo": {
 						"Type": "AWS::Lambda::Version",
 						"DeletionPolicy": "Retain",
 						"Properties": {
 							"FunctionName": {
 								"Ref": "SignInLambdaFunction"
 							},
-							"CodeSha256": "ibwW4HFehPfYOh1w5w/x2dkdbQJmKnbw9mNqfAsIQok="
+							"CodeSha256": "ANKeuF2twk5fnnlzrcvn05IiJMrUwi1GEVhSv/GTqz8="
 						}
 					},
 					"HttpApi": {
@@ -897,13 +946,13 @@
 							"TimeoutInMillis": 30000
 						}
 					},
-					"HttpApiRoutePostUsersCreate": {
+					"HttpApiRoutePostUsers": {
 						"Type": "AWS::ApiGatewayV2::Route",
 						"Properties": {
 							"ApiId": {
 								"Ref": "HttpApi"
 							},
-							"RouteKey": "POST /users/create",
+							"RouteKey": "POST /users",
 							"Target": {
 								"Fn::Join": [
 									"/",
@@ -970,13 +1019,13 @@
 							"TimeoutInMillis": 30000
 						}
 					},
-					"HttpApiRouteDeleteUsersDelete": {
+					"HttpApiRouteDeleteUsers": {
 						"Type": "AWS::ApiGatewayV2::Route",
 						"Properties": {
 							"ApiId": {
 								"Ref": "HttpApi"
 							},
-							"RouteKey": "DELETE /users/delete",
+							"RouteKey": "DELETE /users",
 							"Target": {
 								"Fn::Join": [
 									"/",
@@ -994,6 +1043,79 @@
 							}
 						},
 						"DependsOn": "HttpApiIntegrationDeleteUser"
+					},
+					"ListUsersLambdaPermissionHttpApi": {
+						"Type": "AWS::Lambda::Permission",
+						"Properties": {
+							"FunctionName": {
+								"Fn::GetAtt": ["ListUsersLambdaFunction", "Arn"]
+							},
+							"Action": "lambda:InvokeFunction",
+							"Principal": "apigateway.amazonaws.com",
+							"SourceArn": {
+								"Fn::Join": [
+									"",
+									[
+										"arn:",
+										{
+											"Ref": "AWS::Partition"
+										},
+										":execute-api:",
+										{
+											"Ref": "AWS::Region"
+										},
+										":",
+										{
+											"Ref": "AWS::AccountId"
+										},
+										":",
+										{
+											"Ref": "HttpApi"
+										},
+										"/*"
+									]
+								]
+							}
+						}
+					},
+					"HttpApiIntegrationListUsers": {
+						"Type": "AWS::ApiGatewayV2::Integration",
+						"Properties": {
+							"ApiId": {
+								"Ref": "HttpApi"
+							},
+							"IntegrationType": "AWS_PROXY",
+							"IntegrationUri": {
+								"$ref": "$[\"service\"][\"provider\"][\"compiledCloudFormationTemplate\"][\"Resources\"][\"ListUsersLambdaPermissionHttpApi\"][\"Properties\"][\"FunctionName\"]"
+							},
+							"PayloadFormatVersion": "2.0",
+							"TimeoutInMillis": 30000
+						}
+					},
+					"HttpApiRouteGetUsers": {
+						"Type": "AWS::ApiGatewayV2::Route",
+						"Properties": {
+							"ApiId": {
+								"Ref": "HttpApi"
+							},
+							"RouteKey": "GET /users",
+							"Target": {
+								"Fn::Join": [
+									"/",
+									[
+										"integrations",
+										{
+											"Ref": "HttpApiIntegrationListUsers"
+										}
+									]
+								]
+							},
+							"AuthorizationType": "JWT",
+							"AuthorizerId": {
+								"Ref": "HttpApiAuthorizerCognitoAuthorizer"
+							}
+						},
+						"DependsOn": "HttpApiIntegrationListUsers"
 					},
 					"WaiterAppUserPool": {
 						"Type": "AWS::Cognito::UserPool",
@@ -1125,7 +1247,7 @@
 					"RefreshTokenLambdaFunctionQualifiedArn": {
 						"Description": "Current Lambda function version",
 						"Value": {
-							"Ref": "RefreshTokenLambdaVersionX9cOia9OJIuJ2LpXllOWool5bptsJ0LND5H01c"
+							"Ref": "RefreshTokenLambdaVersionxRyn3jfbsMbLMKfI59AkzAVIKgR0kZftTxDeQDRdQ"
 						},
 						"Export": {
 							"Name": "sls-waiterapp-dev-RefreshTokenLambdaFunctionQualifiedArn"
@@ -1134,7 +1256,7 @@
 					"ForgotPasswordLambdaFunctionQualifiedArn": {
 						"Description": "Current Lambda function version",
 						"Value": {
-							"Ref": "ForgotPasswordLambdaVersioncwHPOmDwo3pKKOTTDoInF7iiwrS0tj69OUSHOndCI4"
+							"Ref": "ForgotPasswordLambdaVersionRYpIdbuUyLS0oK2UVWyxDGmbMi9tmbOPIaGSKKqa0"
 						},
 						"Export": {
 							"Name": "sls-waiterapp-dev-ForgotPasswordLambdaFunctionQualifiedArn"
@@ -1143,7 +1265,7 @@
 					"AccountConfirmationLambdaFunctionQualifiedArn": {
 						"Description": "Current Lambda function version",
 						"Value": {
-							"Ref": "AccountConfirmationLambdaVersionRUFi1rZQwRefC2UhqipHX56dYkZGPdkEMblYpVinZ8"
+							"Ref": "AccountConfirmationLambdaVersionEZcLgjE3yrqIVaeYMgfEzRJv9JSiRCVe74p6ZibeJgI"
 						},
 						"Export": {
 							"Name": "sls-waiterapp-dev-AccountConfirmationLambdaFunctionQualifiedArn"
@@ -1152,34 +1274,43 @@
 					"ResetPasswordLambdaFunctionQualifiedArn": {
 						"Description": "Current Lambda function version",
 						"Value": {
-							"Ref": "ResetPasswordLambdaVersionkeVcweDbG3jPT4eKCoVg8LHyO3PFask50EMc7MS78"
+							"Ref": "ResetPasswordLambdaVersionPHPrZNyFnx859GmjJoNCmdN5OKlZWCwLGKc6Di270"
 						},
 						"Export": {
 							"Name": "sls-waiterapp-dev-ResetPasswordLambdaFunctionQualifiedArn"
 						}
 					},
-					"CreateUserLambdaFunctionQualifiedArn": {
-						"Description": "Current Lambda function version",
-						"Value": {
-							"Ref": "CreateUserLambdaVersionoqQjfrJd0NnkV2bbLcrs2rJqnwZU03wGD3n8tK9pSIY"
-						},
-						"Export": {
-							"Name": "sls-waiterapp-dev-CreateUserLambdaFunctionQualifiedArn"
-						}
-					},
 					"DeleteUserLambdaFunctionQualifiedArn": {
 						"Description": "Current Lambda function version",
 						"Value": {
-							"Ref": "DeleteUserLambdaVersionHchJX9vPtYXI27PRLVdsTbUL57TurzwjC8mBa6TgXww"
+							"Ref": "DeleteUserLambdaVersionzH0RomG1Gwo6NCwt4thoGFTcBrEfbHwo0UMHoxMomKI"
 						},
 						"Export": {
 							"Name": "sls-waiterapp-dev-DeleteUserLambdaFunctionQualifiedArn"
 						}
 					},
+					"CreateUserLambdaFunctionQualifiedArn": {
+						"Description": "Current Lambda function version",
+						"Value": {
+							"Ref": "CreateUserLambdaVersionvjjnu8zwQfMVqEW1DC7vTOGgE1KUaIKv3EBGeEN0ek"
+						},
+						"Export": {
+							"Name": "sls-waiterapp-dev-CreateUserLambdaFunctionQualifiedArn"
+						}
+					},
+					"ListUsersLambdaFunctionQualifiedArn": {
+						"Description": "Current Lambda function version",
+						"Value": {
+							"Ref": "ListUsersLambdaVersionGpa4flRLBBM0bm9VnXNK5epYnbb9Aud4nvbKmuBvqE"
+						},
+						"Export": {
+							"Name": "sls-waiterapp-dev-ListUsersLambdaFunctionQualifiedArn"
+						}
+					},
 					"SignInLambdaFunctionQualifiedArn": {
 						"Description": "Current Lambda function version",
 						"Value": {
-							"Ref": "SignInLambdaVersion13MQDf9ulzMIoE8MsjTcYpPGGE62RDc4UnQjBICZUo"
+							"Ref": "SignInLambdaVersiono0bjgVJIlF2K3qyGPCTQHNVLB6VPhNr3Qp5vDWRIneo"
 						},
 						"Export": {
 							"Name": "sls-waiterapp-dev-SignInLambdaFunctionQualifiedArn"
@@ -1262,7 +1393,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "AccountConfirmationLambdaVersionRUFi1rZQwRefC2UhqipHX56dYkZGPdkEMblYpVinZ8"
+				"versionLogicalId": "AccountConfirmationLambdaVersionEZcLgjE3yrqIVaeYMgfEzRJv9JSiRCVe74p6ZibeJgI"
 			},
 			"signIn": {
 				"handler": "src/server/functions/auth/signIn.handler",
@@ -1287,7 +1418,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "SignInLambdaVersion13MQDf9ulzMIoE8MsjTcYpPGGE62RDc4UnQjBICZUo"
+				"versionLogicalId": "SignInLambdaVersiono0bjgVJIlF2K3qyGPCTQHNVLB6VPhNr3Qp5vDWRIneo"
 			},
 			"refreshToken": {
 				"handler": "src/server/functions/auth/refreshToken.handler",
@@ -1312,7 +1443,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "RefreshTokenLambdaVersionX9cOia9OJIuJ2LpXllOWool5bptsJ0LND5H01c"
+				"versionLogicalId": "RefreshTokenLambdaVersionxRyn3jfbsMbLMKfI59AkzAVIKgR0kZftTxDeQDRdQ"
 			},
 			"forgotPassword": {
 				"handler": "src/server/functions/auth/forgotPassword.handler",
@@ -1337,7 +1468,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "ForgotPasswordLambdaVersioncwHPOmDwo3pKKOTTDoInF7iiwrS0tj69OUSHOndCI4"
+				"versionLogicalId": "ForgotPasswordLambdaVersionRYpIdbuUyLS0oK2UVWyxDGmbMi9tmbOPIaGSKKqa0"
 			},
 			"resetPassword": {
 				"handler": "src/server/functions/auth/resetPassword.handler",
@@ -1362,7 +1493,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "ResetPasswordLambdaVersionkeVcweDbG3jPT4eKCoVg8LHyO3PFask50EMc7MS78"
+				"versionLogicalId": "ResetPasswordLambdaVersionPHPrZNyFnx859GmjJoNCmdN5OKlZWCwLGKc6Di270"
 			},
 			"createUser": {
 				"handler": "src/server/functions/users/createUser.handler",
@@ -1370,13 +1501,13 @@
 					{
 						"httpApi": {
 							"method": "POST",
-							"path": "/users/create",
+							"path": "/users",
 							"authorizer": {
 								"name": "CognitoAuthorizer"
 							}
 						},
 						"resolvedMethod": "POST",
-						"resolvedPath": "/users/create"
+						"resolvedPath": "/users"
 					}
 				],
 				"name": "waiterapp-dev-createUser",
@@ -1390,7 +1521,7 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "CreateUserLambdaVersionoqQjfrJd0NnkV2bbLcrs2rJqnwZU03wGD3n8tK9pSIY"
+				"versionLogicalId": "CreateUserLambdaVersionvjjnu8zwQfMVqEW1DC7vTOGgE1KUaIKv3EBGeEN0ek"
 			},
 			"deleteUser": {
 				"handler": "src/server/functions/users/deleteUser.handler",
@@ -1398,13 +1529,13 @@
 					{
 						"httpApi": {
 							"method": "DELETE",
-							"path": "/users/delete",
+							"path": "/users",
 							"authorizer": {
 								"name": "CognitoAuthorizer"
 							}
 						},
 						"resolvedMethod": "DELETE",
-						"resolvedPath": "/users/delete"
+						"resolvedPath": "/users"
 					}
 				],
 				"name": "waiterapp-dev-deleteUser",
@@ -1418,7 +1549,35 @@
 				"timeout": 6,
 				"runtime": "nodejs20.x",
 				"vpc": {},
-				"versionLogicalId": "DeleteUserLambdaVersionHchJX9vPtYXI27PRLVdsTbUL57TurzwjC8mBa6TgXww"
+				"versionLogicalId": "DeleteUserLambdaVersionzH0RomG1Gwo6NCwt4thoGFTcBrEfbHwo0UMHoxMomKI"
+			},
+			"listUsers": {
+				"handler": "src/server/functions/users/listUsers.handler",
+				"events": [
+					{
+						"httpApi": {
+							"method": "GET",
+							"path": "/users",
+							"authorizer": {
+								"name": "CognitoAuthorizer"
+							}
+						},
+						"resolvedMethod": "GET",
+						"resolvedPath": "/users"
+					}
+				],
+				"name": "waiterapp-dev-listUsers",
+				"environment": {
+					"NODE_OPTIONS": "--enable-source-maps"
+				},
+				"package": {
+					"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-listUsers.zip"
+				},
+				"memory": 1024,
+				"timeout": 6,
+				"runtime": "nodejs20.x",
+				"vpc": {},
+				"versionLogicalId": "ListUsersLambdaVersionGpa4flRLBBM0bm9VnXNK5epYnbb9Aud4nvbKmuBvqE"
 			}
 		},
 		"resources": {
@@ -1554,7 +1713,7 @@
 				"individually": true,
 				"artifactsS3KeyDirname": "serverless/waiterapp/dev/code-artifacts",
 				"deploymentBucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
-				"artifactDirectoryName": "serverless/waiterapp/dev/1728582949322-2024-10-10T17:55:49.322Z"
+				"artifactDirectoryName": "serverless/waiterapp/dev/1728645681059-2024-10-11T11:21:21.059Z"
 			},
 			"provider": {
 				"$ref": "$[\"service\"][\"provider\"]"
@@ -1575,7 +1734,7 @@
 	},
 	"package": {
 		"individually": true,
-		"artifactDirectoryName": "serverless/waiterapp/dev/1728582949322-2024-10-10T17:55:49.322Z",
+		"artifactDirectoryName": "serverless/waiterapp/dev/1728645681059-2024-10-11T11:21:21.059Z",
 		"artifact": ""
 	}
 }

@@ -4,7 +4,7 @@ import type { IController, IRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import {
 	NotAuthorizedException,
-	UsernameExistsException
+	UserNotFoundException
 } from '@aws-sdk/client-cognito-identity-provider';
 
 export class DeleteUserController implements IController {
@@ -28,11 +28,11 @@ export class DeleteUserController implements IController {
 				statusCode: 204
 			};
 		} catch (error) {
-			if (error instanceof UsernameExistsException) {
+			if (error instanceof UserNotFoundException) {
 				return {
-					statusCode: 409,
+					statusCode: 404,
 					body: {
-						error: 'This e-mail is already in use.'
+						error: 'User not found.'
 					}
 				};
 			}
