@@ -1,0 +1,15 @@
+{
+	"name": "waiterapp",
+	"version": "1.0.0",
+	"main": "index.js",
+	"license": "MIT",
+	"scripts": {
+		"prepare": "husky"
+	},
+	"dependencies": {},
+	"lint-staged": {
+		"*": [
+			"biome check --write --no-errors-on-unmatched --files-ignore-unknown=true --error-on-warnings"
+		]
+	}
+}

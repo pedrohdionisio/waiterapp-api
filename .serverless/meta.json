@@ -16,7 +16,9 @@
 			"frameworkVersion": "4",
 			"package": {
 				"individually": true,
-				"artifactsS3KeyDirname": "serverless/waiterapp/dev/code-artifacts"
+				"artifactsS3KeyDirname": "serverless/waiterapp/dev/code-artifacts",
+				"deploymentBucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+				"artifactDirectoryName": "serverless/waiterapp/dev/1729164113180-2024-10-17T11:21:53.180Z"
 			},
 			"provider": {
 				"name": "aws",
@@ -86,74 +88,1085 @@
 				},
 				"stage": "dev",
 				"versionFunctions": true,
-				"remoteFunctionData": {
-					"Configuration": {
-						"FunctionName": "waiterapp-dev-updateUser",
-						"FunctionArn": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-updateUser",
-						"Runtime": "nodejs20.x",
-						"Role": "arn:aws:iam::356975246949:role/waiterapp-dev-us-east-1-lambdaRole",
-						"Handler": "src/server/functions/users/updateUser.handler",
-						"CodeSize": 89510,
-						"Description": "",
-						"Timeout": 6,
-						"MemorySize": 1024,
-						"LastModified": "2024-10-16T22:52:23.000+0000",
-						"CodeSha256": "ZIv/NFZ3BvFMj2hQSHBYZvLxe9aeTOXUYaxtZSyLRLA=",
-						"Version": "$LATEST",
-						"Environment": {
-							"Variables": {
-								"NODE_OPTIONS": "--enable-source-maps",
-								"COGNITO_CLIENT_ID": "2n8samr7regjcm32b97afuchl",
-								"COGNITO_USER_POOL_ID": "us-east-1_FiR6t5Wuy"
+				"compiledCloudFormationTemplate": {
+					"AWSTemplateFormatVersion": "2010-09-09",
+					"Description": "The AWS CloudFormation template for this Serverless application",
+					"Resources": {
+						"AccountConfirmationLogGroup": {
+							"Type": "AWS::Logs::LogGroup",
+							"Properties": {
+								"LogGroupName": "/aws/lambda/waiterapp-dev-accountConfirmation"
 							}
 						},
-						"KMSKeyArn": null,
-						"TracingConfig": {
-							"Mode": "PassThrough"
+						"SignInLogGroup": {
+							"Type": "AWS::Logs::LogGroup",
+							"Properties": {
+								"LogGroupName": "/aws/lambda/waiterapp-dev-signIn"
+							}
 						},
-						"MasterArn": null,
-						"RevisionId": "253f5839-37d9-42e1-aea9-b2548e436c2c",
-						"State": "Active",
-						"StateReason": null,
-						"StateReasonCode": null,
-						"LastUpdateStatus": "Successful",
-						"LastUpdateStatusReason": null,
-						"LastUpdateStatusReasonCode": null,
-						"PackageType": "Zip",
-						"SigningProfileVersionArn": null,
-						"SigningJobArn": null,
-						"Architectures": ["arm64"],
-						"EphemeralStorage": {
-							"Size": 512
+						"RefreshTokenLogGroup": "<REDACTED>",
+						"ForgotPasswordLogGroup": "<REDACTED>",
+						"ResetPasswordLogGroup": "<REDACTED>",
+						"CreateUserLogGroup": {
+							"Type": "AWS::Logs::LogGroup",
+							"Properties": {
+								"LogGroupName": "/aws/lambda/waiterapp-dev-createUser"
+							}
 						},
-						"SnapStart": {
-							"ApplyOn": "None",
-							"OptimizationStatus": "Off"
+						"DeleteUserLogGroup": {
+							"Type": "AWS::Logs::LogGroup",
+							"Properties": {
+								"LogGroupName": "/aws/lambda/waiterapp-dev-deleteUser"
+							}
 						},
-						"RuntimeVersionConfig": {
-							"RuntimeVersionArn": "arn:aws:lambda:us-east-1::runtime:5d2526a9c5e8e7de181a82a9c5f3486d1d552ff4e4f3d15ae645652f6acf2e68"
+						"ListUsersLogGroup": {
+							"Type": "AWS::Logs::LogGroup",
+							"Properties": {
+								"LogGroupName": "/aws/lambda/waiterapp-dev-listUsers"
+							}
 						},
-						"LoggingConfig": {
-							"LogFormat": "Text",
-							"ApplicationLogLevel": null,
-							"SystemLogLevel": null,
-							"LogGroup": "/aws/lambda/waiterapp-dev-updateUser"
+						"UpdateUserLogGroup": {
+							"Type": "AWS::Logs::LogGroup",
+							"Properties": {
+								"LogGroupName": "/aws/lambda/waiterapp-dev-updateUser"
+							}
 						},
-						"Layers": []
+						"IamRoleLambdaExecution": {
+							"Type": "AWS::IAM::Role",
+							"Properties": {
+								"AssumeRolePolicyDocument": {
+									"Version": "2012-10-17",
+									"Statement": [
+										{
+											"Effect": "Allow",
+											"Principal": {
+												"Service": ["lambda.amazonaws.com"]
+											},
+											"Action": ["sts:AssumeRole"]
+										}
+									]
+								},
+								"Policies": [
+									{
+										"PolicyName": {
+											"Fn::Join": ["-", ["waiterapp", "dev", "lambda"]]
+										},
+										"PolicyDocument": {
+											"Version": "2012-10-17",
+											"Statement": [
+												{
+													"Effect": "Allow",
+													"Action": [
+														"logs:CreateLogStream",
+														"logs:CreateLogGroup",
+														"logs:TagResource"
+													],
+													"Resource": [
+														{
+															"Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/waiterapp-dev*:*"
+														}
+													]
+												},
+												{
+													"Effect": "Allow",
+													"Action": ["logs:PutLogEvents"],
+													"Resource": [
+														{
+															"Fn::Sub": "arn:${AWS::Partition}:logs:${AWS::Region}:${AWS::AccountId}:log-group:/aws/lambda/waiterapp-dev*:*:*"
+														}
+													]
+												},
+												{
+													"Effect": "Allow",
+													"Action": [
+														"dynamodb:PutItem",
+														"dynamodb:DeleteItem",
+														"dynamodb:GetItem",
+														"dynamodb:UpdateItem",
+														"dynamodb:Query"
+													],
+													"Resource": [
+														{
+															"Fn::Sub": "${WaiterAppTable.Arn}"
+														},
+														{
+															"Fn::Sub": "${WaiterAppTable.Arn}/index/*"
+														}
+													]
+												},
+												{
+													"Effect": "Allow",
+													"Action": [
+														"cognito-idp:AdminDeleteUser",
+														"cognito-idp:AdminUpdateUserAttributes"
+													],
+													"Resource": [
+														{
+															"Fn::GetAtt": ["WaiterAppUserPool", "Arn"]
+														}
+													]
+												}
+											]
+										}
+									}
+								],
+								"Path": "/",
+								"RoleName": {
+									"Fn::Join": [
+										"-",
+										[
+											"waiterapp",
+											"dev",
+											{
+												"Ref": "AWS::Region"
+											},
+											"lambdaRole"
+										]
+									]
+								}
+							}
+						},
+						"AccountConfirmationLambdaFunction": {
+							"Type": "AWS::Lambda::Function",
+							"Properties": {
+								"Code": {
+									"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+									"S3Key": "serverless/waiterapp/dev/1729164113180-2024-10-17T11:21:53.180Z/waiterapp-accountConfirmation.zip"
+								},
+								"Handler": "src/server/functions/auth/accountConfirmation.handler",
+								"Runtime": "nodejs20.x",
+								"FunctionName": "waiterapp-dev-accountConfirmation",
+								"MemorySize": 1024,
+								"Timeout": 6,
+								"Architectures": ["arm64"],
+								"Environment": {
+									"Variables": {
+										"COGNITO_CLIENT_ID": {
+											"Ref": "WaiterAppUserPoolClient"
+										},
+										"COGNITO_USER_POOL_ID": {
+											"Ref": "WaiterAppUserPool"
+										},
+										"NODE_OPTIONS": "--enable-source-maps"
+									}
+								},
+								"Role": {
+									"Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+								}
+							},
+							"DependsOn": ["AccountConfirmationLogGroup"]
+						},
+						"SignInLambdaFunction": {
+							"Type": "AWS::Lambda::Function",
+							"Properties": {
+								"Code": {
+									"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+									"S3Key": "serverless/waiterapp/dev/1729164113180-2024-10-17T11:21:53.180Z/waiterapp-signIn.zip"
+								},
+								"Handler": "src/server/functions/auth/signIn.handler",
+								"Runtime": "nodejs20.x",
+								"FunctionName": "waiterapp-dev-signIn",
+								"MemorySize": 1024,
+								"Timeout": 6,
+								"Architectures": ["arm64"],
+								"Environment": {
+									"Variables": {
+										"COGNITO_CLIENT_ID": {
+											"Ref": "WaiterAppUserPoolClient"
+										},
+										"COGNITO_USER_POOL_ID": {
+											"Ref": "WaiterAppUserPool"
+										},
+										"NODE_OPTIONS": "--enable-source-maps"
+									}
+								},
+								"Role": {
+									"Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+								}
+							},
+							"DependsOn": ["SignInLogGroup"]
+						},
+						"RefreshTokenLambdaFunction": "<REDACTED>",
+						"ForgotPasswordLambdaFunction": "<REDACTED>",
+						"ResetPasswordLambdaFunction": "<REDACTED>",
+						"CreateUserLambdaFunction": {
+							"Type": "AWS::Lambda::Function",
+							"Properties": {
+								"Code": {
+									"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+									"S3Key": "serverless/waiterapp/dev/1729164113180-2024-10-17T11:21:53.180Z/waiterapp-createUser.zip"
+								},
+								"Handler": "src/server/functions/users/createUser.handler",
+								"Runtime": "nodejs20.x",
+								"FunctionName": "waiterapp-dev-createUser",
+								"MemorySize": 1024,
+								"Timeout": 6,
+								"Architectures": ["arm64"],
+								"Environment": {
+									"Variables": {
+										"COGNITO_CLIENT_ID": {
+											"Ref": "WaiterAppUserPoolClient"
+										},
+										"COGNITO_USER_POOL_ID": {
+											"Ref": "WaiterAppUserPool"
+										},
+										"NODE_OPTIONS": "--enable-source-maps"
+									}
+								},
+								"Role": {
+									"Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+								}
+							},
+							"DependsOn": ["CreateUserLogGroup"]
+						},
+						"DeleteUserLambdaFunction": {
+							"Type": "AWS::Lambda::Function",
+							"Properties": {
+								"Code": {
+									"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+									"S3Key": "serverless/waiterapp/dev/1729164113180-2024-10-17T11:21:53.180Z/waiterapp-deleteUser.zip"
+								},
+								"Handler": "src/server/functions/users/deleteUser.handler",
+								"Runtime": "nodejs20.x",
+								"FunctionName": "waiterapp-dev-deleteUser",
+								"MemorySize": 1024,
+								"Timeout": 6,
+								"Architectures": ["arm64"],
+								"Environment": {
+									"Variables": {
+										"COGNITO_CLIENT_ID": {
+											"Ref": "WaiterAppUserPoolClient"
+										},
+										"COGNITO_USER_POOL_ID": {
+											"Ref": "WaiterAppUserPool"
+										},
+										"NODE_OPTIONS": "--enable-source-maps"
+									}
+								},
+								"Role": {
+									"Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+								}
+							},
+							"DependsOn": ["DeleteUserLogGroup"]
+						},
+						"ListUsersLambdaFunction": {
+							"Type": "AWS::Lambda::Function",
+							"Properties": {
+								"Code": {
+									"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+									"S3Key": "serverless/waiterapp/dev/1729164113180-2024-10-17T11:21:53.180Z/waiterapp-listUsers.zip"
+								},
+								"Handler": "src/server/functions/users/listUsers.handler",
+								"Runtime": "nodejs20.x",
+								"FunctionName": "waiterapp-dev-listUsers",
+								"MemorySize": 1024,
+								"Timeout": 6,
+								"Architectures": ["arm64"],
+								"Environment": {
+									"Variables": {
+										"COGNITO_CLIENT_ID": {
+											"Ref": "WaiterAppUserPoolClient"
+										},
+										"COGNITO_USER_POOL_ID": {
+											"Ref": "WaiterAppUserPool"
+										},
+										"NODE_OPTIONS": "--enable-source-maps"
+									}
+								},
+								"Role": {
+									"Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+								}
+							},
+							"DependsOn": ["ListUsersLogGroup"]
+						},
+						"UpdateUserLambdaFunction": {
+							"Type": "AWS::Lambda::Function",
+							"Properties": {
+								"Code": {
+									"S3Bucket": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+									"S3Key": "serverless/waiterapp/dev/1729164113180-2024-10-17T11:21:53.180Z/waiterapp-updateUser.zip"
+								},
+								"Handler": "src/server/functions/users/updateUser.handler",
+								"Runtime": "nodejs20.x",
+								"FunctionName": "waiterapp-dev-updateUser",
+								"MemorySize": 1024,
+								"Timeout": 6,
+								"Architectures": ["arm64"],
+								"Environment": {
+									"Variables": {
+										"COGNITO_CLIENT_ID": {
+											"Ref": "WaiterAppUserPoolClient"
+										},
+										"COGNITO_USER_POOL_ID": {
+											"Ref": "WaiterAppUserPool"
+										},
+										"NODE_OPTIONS": "--enable-source-maps"
+									}
+								},
+								"Role": {
+									"Fn::GetAtt": ["IamRoleLambdaExecution", "Arn"]
+								}
+							},
+							"DependsOn": ["UpdateUserLogGroup"]
+						},
+						"RefreshTokenLambdaVersionigo2toYB7FpR2eoP5XZbosIdqE6mrMqe4dvM86p60YQ": "<REDACTED>",
+						"ForgotPasswordLambdaVersionI4QwlOQ8oHKsBfsIAVPJqHdpTzIHER7MEwrqY6vv0": "<REDACTED>",
+						"AccountConfirmationLambdaVersion8Y5whsGheaJ0s9pVVqIpIrZk57Y2OyPwTFt7M3MW0": {
+							"Type": "AWS::Lambda::Version",
+							"DeletionPolicy": "Retain",
+							"Properties": {
+								"FunctionName": {
+									"Ref": "AccountConfirmationLambdaFunction"
+								},
+								"CodeSha256": "x/R6dJC4eGUYie/8/OrerfvNZUQVO0dDgYbEfXxIs24="
+							}
+						},
+						"ResetPasswordLambdaVersionac5GE729eakLqDL9J93fsNzEaGfHRYW3PATa07KEI": "<REDACTED>",
+						"CreateUserLambdaVersionyssRPHri8ZpT2Tm1ugMqsPAM57pQ7mtVixzMjsRmgw": {
+							"Type": "AWS::Lambda::Version",
+							"DeletionPolicy": "Retain",
+							"Properties": {
+								"FunctionName": {
+									"Ref": "CreateUserLambdaFunction"
+								},
+								"CodeSha256": "G2lc2qZIKFtZW3n089dQezSQV6VVXm8d3Mg46aFfcyo="
+							}
+						},
+						"DeleteUserLambdaVersionYKSzXNgmtXaxabov3dqXTP5rZATUuIayVMWsaKweNw4": {
+							"Type": "AWS::Lambda::Version",
+							"DeletionPolicy": "Retain",
+							"Properties": {
+								"FunctionName": {
+									"Ref": "DeleteUserLambdaFunction"
+								},
+								"CodeSha256": "AdR/klbvX9Kml9wUJtTFR22ChCPdr1noGzbOgq/aGeQ="
+							}
+						},
+						"ListUsersLambdaVersionyxxxrnarWmykxavLJa5gDKMtc8UFFjMPdZQbIWU": {
+							"Type": "AWS::Lambda::Version",
+							"DeletionPolicy": "Retain",
+							"Properties": {
+								"FunctionName": {
+									"Ref": "ListUsersLambdaFunction"
+								},
+								"CodeSha256": "/z0Tw1Te+ULWuPlsDnPMy+B+9Jql/cSrczGaDdzIFoA="
+							}
+						},
+						"UpdateUserLambdaVersiondhZgZDwGTmjkBPhvMOAquYW9kCm8ciAA5Hl7SAcbUQ": {
+							"Type": "AWS::Lambda::Version",
+							"DeletionPolicy": "Retain",
+							"Properties": {
+								"FunctionName": {
+									"Ref": "UpdateUserLambdaFunction"
+								},
+								"CodeSha256": "Z1xnEK9VS5l55Z8tp3+gkOTdE3ROaXLK6eAd6NPYYbk="
+							}
+						},
+						"SignInLambdaVersionpHkmyWgGPH9f2ZCHTXgdNB9HlNxPBevozgyQ14CCck": {
+							"Type": "AWS::Lambda::Version",
+							"DeletionPolicy": "Retain",
+							"Properties": {
+								"FunctionName": {
+									"Ref": "SignInLambdaFunction"
+								},
+								"CodeSha256": "Em394XYIGSM1l6hWpMh01VAoPH2/RXxB8JX9YRU8HWc="
+							}
+						},
+						"HttpApi": {
+							"Type": "AWS::ApiGatewayV2::Api",
+							"Properties": {
+								"Name": "dev-waiterapp",
+								"ProtocolType": "HTTP"
+							}
+						},
+						"HttpApiStage": {
+							"Type": "AWS::ApiGatewayV2::Stage",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"StageName": "$default",
+								"AutoDeploy": true,
+								"DefaultRouteSettings": {
+									"DetailedMetricsEnabled": false
+								}
+							}
+						},
+						"HttpApiAuthorizerCognitoAuthorizer": {
+							"Type": "AWS::ApiGatewayV2::Authorizer",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"Name": "CognitoAuthorizer",
+								"IdentitySource": ["$request.header.Authorization"],
+								"AuthorizerType": "JWT",
+								"JwtConfiguration": {
+									"Audience": [
+										{
+											"Ref": "WaiterAppUserPoolClient"
+										}
+									],
+									"Issuer": {
+										"Fn::GetAtt": ["WaiterAppUserPool", "ProviderURL"]
+									}
+								}
+							}
+						},
+						"AccountConfirmationLambdaPermissionHttpApi": {
+							"Type": "AWS::Lambda::Permission",
+							"Properties": {
+								"FunctionName": {
+									"Fn::GetAtt": ["AccountConfirmationLambdaFunction", "Arn"]
+								},
+								"Action": "lambda:InvokeFunction",
+								"Principal": "apigateway.amazonaws.com",
+								"SourceArn": {
+									"Fn::Join": [
+										"",
+										[
+											"arn:",
+											{
+												"Ref": "AWS::Partition"
+											},
+											":execute-api:",
+											{
+												"Ref": "AWS::Region"
+											},
+											":",
+											{
+												"Ref": "AWS::AccountId"
+											},
+											":",
+											{
+												"Ref": "HttpApi"
+											},
+											"/*"
+										]
+									]
+								}
+							}
+						},
+						"HttpApiIntegrationAccountConfirmation": {
+							"Type": "AWS::ApiGatewayV2::Integration",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"IntegrationType": "AWS_PROXY",
+								"IntegrationUri": {
+									"Fn::GetAtt": ["AccountConfirmationLambdaFunction", "Arn"]
+								},
+								"PayloadFormatVersion": "2.0",
+								"TimeoutInMillis": 30000
+							}
+						},
+						"HttpApiRoutePostAuthAccountDashconfirmation": {
+							"Type": "AWS::ApiGatewayV2::Route",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"RouteKey": "POST /auth/account-confirmation",
+								"Target": {
+									"Fn::Join": [
+										"/",
+										[
+											"integrations",
+											{
+												"Ref": "HttpApiIntegrationAccountConfirmation"
+											}
+										]
+									]
+								},
+								"AuthorizationType": "JWT",
+								"AuthorizerId": {
+									"Ref": "HttpApiAuthorizerCognitoAuthorizer"
+								}
+							},
+							"DependsOn": "HttpApiIntegrationAccountConfirmation"
+						},
+						"SignInLambdaPermissionHttpApi": {
+							"Type": "AWS::Lambda::Permission",
+							"Properties": {
+								"FunctionName": {
+									"Fn::GetAtt": ["SignInLambdaFunction", "Arn"]
+								},
+								"Action": "lambda:InvokeFunction",
+								"Principal": "apigateway.amazonaws.com",
+								"SourceArn": {
+									"Fn::Join": [
+										"",
+										[
+											"arn:",
+											{
+												"Ref": "AWS::Partition"
+											},
+											":execute-api:",
+											{
+												"Ref": "AWS::Region"
+											},
+											":",
+											{
+												"Ref": "AWS::AccountId"
+											},
+											":",
+											{
+												"Ref": "HttpApi"
+											},
+											"/*"
+										]
+									]
+								}
+							}
+						},
+						"HttpApiIntegrationSignIn": {
+							"Type": "AWS::ApiGatewayV2::Integration",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"IntegrationType": "AWS_PROXY",
+								"IntegrationUri": {
+									"Fn::GetAtt": ["SignInLambdaFunction", "Arn"]
+								},
+								"PayloadFormatVersion": "2.0",
+								"TimeoutInMillis": 30000
+							}
+						},
+						"HttpApiRoutePostAuthSignDashin": {
+							"Type": "AWS::ApiGatewayV2::Route",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"RouteKey": "POST /auth/sign-in",
+								"Target": {
+									"Fn::Join": [
+										"/",
+										[
+											"integrations",
+											{
+												"Ref": "HttpApiIntegrationSignIn"
+											}
+										]
+									]
+								}
+							},
+							"DependsOn": "HttpApiIntegrationSignIn"
+						},
+						"RefreshTokenLambdaPermissionHttpApi": "<REDACTED>",
+						"HttpApiIntegrationRefreshToken": "<REDACTED>",
+						"HttpApiRoutePostAuthRefreshDashtoken": "<REDACTED>",
+						"ForgotPasswordLambdaPermissionHttpApi": "<REDACTED>",
+						"HttpApiIntegrationForgotPassword": "<REDACTED>",
+						"HttpApiRoutePostAuthForgotDashpassword": "<REDACTED>",
+						"ResetPasswordLambdaPermissionHttpApi": "<REDACTED>",
+						"HttpApiIntegrationResetPassword": "<REDACTED>",
+						"HttpApiRoutePostAuthResetDashpassword": "<REDACTED>",
+						"CreateUserLambdaPermissionHttpApi": {
+							"Type": "AWS::Lambda::Permission",
+							"Properties": {
+								"FunctionName": {
+									"Fn::GetAtt": ["CreateUserLambdaFunction", "Arn"]
+								},
+								"Action": "lambda:InvokeFunction",
+								"Principal": "apigateway.amazonaws.com",
+								"SourceArn": {
+									"Fn::Join": [
+										"",
+										[
+											"arn:",
+											{
+												"Ref": "AWS::Partition"
+											},
+											":execute-api:",
+											{
+												"Ref": "AWS::Region"
+											},
+											":",
+											{
+												"Ref": "AWS::AccountId"
+											},
+											":",
+											{
+												"Ref": "HttpApi"
+											},
+											"/*"
+										]
+									]
+								}
+							}
+						},
+						"HttpApiIntegrationCreateUser": {
+							"Type": "AWS::ApiGatewayV2::Integration",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"IntegrationType": "AWS_PROXY",
+								"IntegrationUri": {
+									"Fn::GetAtt": ["CreateUserLambdaFunction", "Arn"]
+								},
+								"PayloadFormatVersion": "2.0",
+								"TimeoutInMillis": 30000
+							}
+						},
+						"HttpApiRoutePostUsers": {
+							"Type": "AWS::ApiGatewayV2::Route",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"RouteKey": "POST /users",
+								"Target": {
+									"Fn::Join": [
+										"/",
+										[
+											"integrations",
+											{
+												"Ref": "HttpApiIntegrationCreateUser"
+											}
+										]
+									]
+								},
+								"AuthorizationType": "JWT",
+								"AuthorizerId": {
+									"Ref": "HttpApiAuthorizerCognitoAuthorizer"
+								}
+							},
+							"DependsOn": "HttpApiIntegrationCreateUser"
+						},
+						"DeleteUserLambdaPermissionHttpApi": {
+							"Type": "AWS::Lambda::Permission",
+							"Properties": {
+								"FunctionName": {
+									"Fn::GetAtt": ["DeleteUserLambdaFunction", "Arn"]
+								},
+								"Action": "lambda:InvokeFunction",
+								"Principal": "apigateway.amazonaws.com",
+								"SourceArn": {
+									"Fn::Join": [
+										"",
+										[
+											"arn:",
+											{
+												"Ref": "AWS::Partition"
+											},
+											":execute-api:",
+											{
+												"Ref": "AWS::Region"
+											},
+											":",
+											{
+												"Ref": "AWS::AccountId"
+											},
+											":",
+											{
+												"Ref": "HttpApi"
+											},
+											"/*"
+										]
+									]
+								}
+							}
+						},
+						"HttpApiIntegrationDeleteUser": {
+							"Type": "AWS::ApiGatewayV2::Integration",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"IntegrationType": "AWS_PROXY",
+								"IntegrationUri": {
+									"Fn::GetAtt": ["DeleteUserLambdaFunction", "Arn"]
+								},
+								"PayloadFormatVersion": "2.0",
+								"TimeoutInMillis": 30000
+							}
+						},
+						"HttpApiRouteDeleteUsers": {
+							"Type": "AWS::ApiGatewayV2::Route",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"RouteKey": "DELETE /users",
+								"Target": {
+									"Fn::Join": [
+										"/",
+										[
+											"integrations",
+											{
+												"Ref": "HttpApiIntegrationDeleteUser"
+											}
+										]
+									]
+								},
+								"AuthorizationType": "JWT",
+								"AuthorizerId": {
+									"Ref": "HttpApiAuthorizerCognitoAuthorizer"
+								}
+							},
+							"DependsOn": "HttpApiIntegrationDeleteUser"
+						},
+						"ListUsersLambdaPermissionHttpApi": {
+							"Type": "AWS::Lambda::Permission",
+							"Properties": {
+								"FunctionName": {
+									"Fn::GetAtt": ["ListUsersLambdaFunction", "Arn"]
+								},
+								"Action": "lambda:InvokeFunction",
+								"Principal": "apigateway.amazonaws.com",
+								"SourceArn": {
+									"Fn::Join": [
+										"",
+										[
+											"arn:",
+											{
+												"Ref": "AWS::Partition"
+											},
+											":execute-api:",
+											{
+												"Ref": "AWS::Region"
+											},
+											":",
+											{
+												"Ref": "AWS::AccountId"
+											},
+											":",
+											{
+												"Ref": "HttpApi"
+											},
+											"/*"
+										]
+									]
+								}
+							}
+						},
+						"HttpApiIntegrationListUsers": {
+							"Type": "AWS::ApiGatewayV2::Integration",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"IntegrationType": "AWS_PROXY",
+								"IntegrationUri": {
+									"Fn::GetAtt": ["ListUsersLambdaFunction", "Arn"]
+								},
+								"PayloadFormatVersion": "2.0",
+								"TimeoutInMillis": 30000
+							}
+						},
+						"HttpApiRouteGetUsers": {
+							"Type": "AWS::ApiGatewayV2::Route",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"RouteKey": "GET /users",
+								"Target": {
+									"Fn::Join": [
+										"/",
+										[
+											"integrations",
+											{
+												"Ref": "HttpApiIntegrationListUsers"
+											}
+										]
+									]
+								},
+								"AuthorizationType": "JWT",
+								"AuthorizerId": {
+									"Ref": "HttpApiAuthorizerCognitoAuthorizer"
+								}
+							},
+							"DependsOn": "HttpApiIntegrationListUsers"
+						},
+						"UpdateUserLambdaPermissionHttpApi": {
+							"Type": "AWS::Lambda::Permission",
+							"Properties": {
+								"FunctionName": {
+									"Fn::GetAtt": ["UpdateUserLambdaFunction", "Arn"]
+								},
+								"Action": "lambda:InvokeFunction",
+								"Principal": "apigateway.amazonaws.com",
+								"SourceArn": {
+									"Fn::Join": [
+										"",
+										[
+											"arn:",
+											{
+												"Ref": "AWS::Partition"
+											},
+											":execute-api:",
+											{
+												"Ref": "AWS::Region"
+											},
+											":",
+											{
+												"Ref": "AWS::AccountId"
+											},
+											":",
+											{
+												"Ref": "HttpApi"
+											},
+											"/*"
+										]
+									]
+								}
+							}
+						},
+						"HttpApiIntegrationUpdateUser": {
+							"Type": "AWS::ApiGatewayV2::Integration",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"IntegrationType": "AWS_PROXY",
+								"IntegrationUri": {
+									"Fn::GetAtt": ["UpdateUserLambdaFunction", "Arn"]
+								},
+								"PayloadFormatVersion": "2.0",
+								"TimeoutInMillis": 30000
+							}
+						},
+						"HttpApiRoutePutUsersUseridVar": {
+							"Type": "AWS::ApiGatewayV2::Route",
+							"Properties": {
+								"ApiId": {
+									"Ref": "HttpApi"
+								},
+								"RouteKey": "PUT /users/{userId}",
+								"Target": {
+									"Fn::Join": [
+										"/",
+										[
+											"integrations",
+											{
+												"Ref": "HttpApiIntegrationUpdateUser"
+											}
+										]
+									]
+								},
+								"AuthorizationType": "JWT",
+								"AuthorizerId": {
+									"Ref": "HttpApiAuthorizerCognitoAuthorizer"
+								}
+							},
+							"DependsOn": "HttpApiIntegrationUpdateUser"
+						},
+						"WaiterAppUserPool": {
+							"Type": "AWS::Cognito::UserPool",
+							"Properties": {
+								"UserPoolName": "WaiterAppUserPool",
+								"MfaConfiguration": "OFF",
+								"AutoVerifiedAttributes": ["email"],
+								"AdminCreateUserConfig": {
+									"AllowAdminCreateUserOnly": false
+								},
+								"UsernameAttributes": ["email"],
+								"AccountRecoverySetting": {
+									"RecoveryMechanisms": [
+										{
+											"Name": "verified_email",
+											"Priority": 1
+										}
+									]
+								},
+								"Policies": {
+									"PasswordPolicy": "<REDACTED>"
+								},
+								"Schema": [
+									{
+										"Name": "name",
+										"Mutable": true,
+										"Required": true,
+										"AttributeDataType": "String"
+									},
+									{
+										"Name": "role",
+										"Mutable": true,
+										"Required": false,
+										"AttributeDataType": "String"
+									}
+								]
+							}
+						},
+						"WaiterAppUserPoolClient": {
+							"Type": "AWS::Cognito::UserPoolClient",
+							"Properties": {
+								"ClientName": "WaiterAppUserPoolClient",
+								"UserPoolId": {
+									"Ref": "WaiterAppUserPool"
+								},
+								"ExplicitAuthFlows": [
+									"ALLOW_USER_PASSWORD_AUTH",
+									"ALLOW_REFRESH_TOKEN_AUTH"
+								],
+								"TokenValidityUnits": "<REDACTED>",
+								"AccessTokenValidity": "<REDACTED>",
+								"RefreshTokenValidity": "<REDACTED>"
+							}
+						},
+						"WaiterAppTable": {
+							"Type": "AWS::DynamoDB::Table",
+							"Properties": {
+								"TableName": "WaiterAppTable",
+								"BillingMode": "PAY_PER_REQUEST",
+								"PointInTimeRecoverySpecification": {
+									"PointInTimeRecoveryEnabled": true
+								},
+								"AttributeDefinitions": [
+									{
+										"AttributeName": "PK",
+										"AttributeType": "S"
+									},
+									{
+										"AttributeName": "SK",
+										"AttributeType": "S"
+									},
+									{
+										"AttributeName": "GSI1PK",
+										"AttributeType": "S"
+									},
+									{
+										"AttributeName": "GSI1SK",
+										"AttributeType": "S"
+									}
+								],
+								"KeySchema": [
+									{
+										"AttributeName": "PK",
+										"KeyType": "HASH"
+									},
+									{
+										"AttributeName": "SK",
+										"KeyType": "RANGE"
+									}
+								],
+								"GlobalSecondaryIndexes": [
+									{
+										"IndexName": "GSI1PK-GSI1SK-index",
+										"KeySchema": [
+											{
+												"AttributeName": "GSI1PK",
+												"KeyType": "HASH"
+											},
+											{
+												"AttributeName": "GSI1SK",
+												"KeyType": "RANGE"
+											}
+										],
+										"Projection": {
+											"ProjectionType": "ALL"
+										}
+									}
+								]
+							}
+						}
 					},
-					"Code": {
-						"RepositoryType": "S3",
-						"Location": "https://prod-iad-c1-djusa-tasks.s3.us-east-1.amazonaws.com/snapshots/356975246949/waiterapp-dev-updateUser-f711284c-619e-4d50-91d3-5088f53d39a7?versionId=.PXXa3csrpIGNGzoTEHOx6ELV8typJY0&X-Amz-Security-Token=IQoJb3JpZ2luX2VjELb%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJHMEUCIQDnvPUyOgogf7zhlpiBJlVtDWECZFYyJvWOkNJEUDFmCwIgI4SNLfyvur%2BoEgMlxFVTtFKAQPSUNAP7%2Ba4j2P9RZT8qugUIHxAEGgw0NzkyMzMwMjUzNzkiDC4l21Vr244qmadQKSqXBcPY0qOp4mzWyOJ0EspObX7V6xULK2Oy%2Fr6EqkpYuhZXagDdeW%2BtjDeNHrFOFf3Gz4%2Fso%2Bto5mmf%2F%2BdPicdlNtGolQMD1MCu2R7nx4asfAy2oSNXDOR5JiBBmA3%2BfiURu3H%2BTtm4R4ef1UkCrII4NbJD1CrrMyf7HHrpgWXC1K7OGOlnRRmhg2qIojpgpOz4aKi%2FWFVzifruPh%2BOZMkRfqCXaPx8FqcSTWSfyrr7lPwenBSO%2BN1KgAnqUh3p8Xw4RE07CihrLqDVnKyFADtfLRL%2B95ZgXp0yh8DWY7FqqRw7M43Tk%2FpvLhDh2gsv%2BAQ9DAryQJc%2F4Xw9mBrIFkXl86aPcPTDYzm8ExOM3IVCB%2FfECHYA31q9%2FGWfQRGpADarNlPn7AMOwJPv3bWh1nb760PFwYu1EIX%2F3Q76i1QMMcX3AQbsPT0ERXoAMcGX5U4i4dwoS8elO7CpjI42fv5BvdAMwPlvzZkvVe7YkJn0NrRcwsH7IFkVwgiXfbsH4YW35Oxdj0iUT6f08oqO95GV30%2FOjs6jySrszGlPAqQPXErtu6Zch0XMJQKII0WLrIjxEPsu%2BO2CPg9pG%2Fa2msQd67%2BFBHFaDgiRhAnWymuq4SajEyKV2nHDkqDdGQRVTCmLckrSVjCIW0EVJHGxWNW0t6xJ52JrE3azQwh%2BxoCC7%2FG8lejNBOlSF3dm28a4IIsaytA%2B73aCQxnG7cz6odae26lRc4n7hoq4iqEIuY1gt0vPVdLTKgmN%2BcDY6zFCaBbgoKUm%2Bz45jg9Hg1a2OGUbZzKFVD1Qt1lm7c9yhANc3i2XAL1W%2FY0iNPEquM5ACru9Eeep%2B8VnX9o91QGSo8wHBhO%2FONr8DR%2FJO5lQi06MMwMDVLxUar5J3TDz78C4BjqxARBBRyM6htFM6oEv7x7Fi7GzzaZJQFglvzDCwbamGZDElUBIiIMo18mGPbGJ3XoTrzOTbn%2F9%2BJkS7WaDZLxBbU1e2g1l1rbLdsqkmlF0ZMrfvGeTVVMtYURtFuMjTaYMel3NZ3r5YWpTTY045k6ZiBVq4Qig1FoyJJVRzQVKre7Idnrnb0bSpkp9heMDRVTidoHky4JIvJJHQYtGzskBaNCR62qre%2FC9o5P6pReYdf7xIQ%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241016T225306Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIAW7FEDUVRUOC7AD6J%2F20241016%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=6be3a0400c5d2680c18323d60f91b9c6fba708bdf2e8d100f601f15698928a97",
-						"ImageUri": null,
-						"ResolvedImageUri": null
-					},
-					"Tags": {
-						"aws:cloudformation:stack-name": "waiterapp-dev",
-						"aws:cloudformation:stack-id": "arn:aws:cloudformation:us-east-1:356975246949:stack/waiterapp-dev/b54ebdd0-843e-11ef-92b9-0affca4126ff",
-						"STAGE": "dev",
-						"aws:cloudformation:logical-id": "UpdateUserLambdaFunction"
+					"Outputs": {
+						"ServerlessDeploymentBucketName": {
+							"Value": "serverless-framework-deployments-us-east-1-ea7edc91-8062",
+							"Export": {
+								"Name": "sls-waiterapp-dev-ServerlessDeploymentBucketName"
+							}
+						},
+						"RefreshTokenLambdaFunctionQualifiedArn": "<REDACTED>",
+						"ForgotPasswordLambdaFunctionQualifiedArn": "<REDACTED>",
+						"AccountConfirmationLambdaFunctionQualifiedArn": {
+							"Description": "Current Lambda function version",
+							"Value": {
+								"Ref": "AccountConfirmationLambdaVersion8Y5whsGheaJ0s9pVVqIpIrZk57Y2OyPwTFt7M3MW0"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-AccountConfirmationLambdaFunctionQualifiedArn"
+							}
+						},
+						"ResetPasswordLambdaFunctionQualifiedArn": "<REDACTED>",
+						"CreateUserLambdaFunctionQualifiedArn": {
+							"Description": "Current Lambda function version",
+							"Value": {
+								"Ref": "CreateUserLambdaVersionyssRPHri8ZpT2Tm1ugMqsPAM57pQ7mtVixzMjsRmgw"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-CreateUserLambdaFunctionQualifiedArn"
+							}
+						},
+						"DeleteUserLambdaFunctionQualifiedArn": {
+							"Description": "Current Lambda function version",
+							"Value": {
+								"Ref": "DeleteUserLambdaVersionYKSzXNgmtXaxabov3dqXTP5rZATUuIayVMWsaKweNw4"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-DeleteUserLambdaFunctionQualifiedArn"
+							}
+						},
+						"ListUsersLambdaFunctionQualifiedArn": {
+							"Description": "Current Lambda function version",
+							"Value": {
+								"Ref": "ListUsersLambdaVersionyxxxrnarWmykxavLJa5gDKMtc8UFFjMPdZQbIWU"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-ListUsersLambdaFunctionQualifiedArn"
+							}
+						},
+						"UpdateUserLambdaFunctionQualifiedArn": {
+							"Description": "Current Lambda function version",
+							"Value": {
+								"Ref": "UpdateUserLambdaVersiondhZgZDwGTmjkBPhvMOAquYW9kCm8ciAA5Hl7SAcbUQ"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-UpdateUserLambdaFunctionQualifiedArn"
+							}
+						},
+						"SignInLambdaFunctionQualifiedArn": {
+							"Description": "Current Lambda function version",
+							"Value": {
+								"Ref": "SignInLambdaVersionpHkmyWgGPH9f2ZCHTXgdNB9HlNxPBevozgyQ14CCck"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-SignInLambdaFunctionQualifiedArn"
+							}
+						},
+						"HttpApiId": {
+							"Description": "Id of the HTTP API",
+							"Value": {
+								"Ref": "HttpApi"
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-HttpApiId"
+							}
+						},
+						"HttpApiUrl": {
+							"Description": "URL of the HTTP API",
+							"Value": {
+								"Fn::Join": [
+									"",
+									[
+										"https://",
+										{
+											"Ref": "HttpApi"
+										},
+										".execute-api.",
+										{
+											"Ref": "AWS::Region"
+										},
+										".",
+										{
+											"Ref": "AWS::URLSuffix"
+										}
+									]
+								]
+							},
+							"Export": {
+								"Name": "sls-waiterapp-dev-HttpApiUrl"
+							}
+						}
 					}
-				}
+				},
+				"vpc": {}
 			},
 			"custom": {
 				"bundle": true,
@@ -280,7 +1293,8 @@
 							]
 						}
 					}
-				}
+				},
+				"Outputs": {}
 			},
 			"functions": {
 				"accountConfirmation": {
@@ -289,11 +1303,27 @@
 						{
 							"httpApi": {
 								"method": "POST",
-								"path": "/auth/account-confirmation"
-							}
+								"path": "/auth/account-confirmation",
+								"authorizer": {
+									"name": "CognitoAuthorizer"
+								}
+							},
+							"resolvedMethod": "POST",
+							"resolvedPath": "/auth/account-confirmation"
 						}
 					],
-					"name": "waiterapp-dev-accountConfirmation"
+					"name": "waiterapp-dev-accountConfirmation",
+					"environment": {
+						"NODE_OPTIONS": "--enable-source-maps"
+					},
+					"package": {
+						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-accountConfirmation.zip"
+					},
+					"memory": 1024,
+					"timeout": 6,
+					"runtime": "nodejs20.x",
+					"vpc": {},
+					"versionLogicalId": "AccountConfirmationLambdaVersion8Y5whsGheaJ0s9pVVqIpIrZk57Y2OyPwTFt7M3MW0"
 				},
 				"signIn": {
 					"handler": "src/server/functions/auth/signIn.handler",
@@ -302,10 +1332,23 @@
 							"httpApi": {
 								"method": "POST",
 								"path": "/auth/sign-in"
-							}
+							},
+							"resolvedMethod": "POST",
+							"resolvedPath": "/auth/sign-in"
 						}
 					],
-					"name": "waiterapp-dev-signIn"
+					"name": "waiterapp-dev-signIn",
+					"environment": {
+						"NODE_OPTIONS": "--enable-source-maps"
+					},
+					"package": {
+						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-signIn.zip"
+					},
+					"memory": 1024,
+					"timeout": 6,
+					"runtime": "nodejs20.x",
+					"vpc": {},
+					"versionLogicalId": "SignInLambdaVersionpHkmyWgGPH9f2ZCHTXgdNB9HlNxPBevozgyQ14CCck"
 				},
 				"refreshToken": "<REDACTED>",
 				"forgotPassword": "<REDACTED>",
@@ -320,10 +1363,23 @@
 								"authorizer": {
 									"name": "CognitoAuthorizer"
 								}
-							}
+							},
+							"resolvedMethod": "POST",
+							"resolvedPath": "/users"
 						}
 					],
-					"name": "waiterapp-dev-createUser"
+					"name": "waiterapp-dev-createUser",
+					"environment": {
+						"NODE_OPTIONS": "--enable-source-maps"
+					},
+					"package": {
+						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-createUser.zip"
+					},
+					"memory": 1024,
+					"timeout": 6,
+					"runtime": "nodejs20.x",
+					"vpc": {},
+					"versionLogicalId": "CreateUserLambdaVersionyssRPHri8ZpT2Tm1ugMqsPAM57pQ7mtVixzMjsRmgw"
 				},
 				"deleteUser": {
 					"handler": "src/server/functions/users/deleteUser.handler",
@@ -335,10 +1391,23 @@
 								"authorizer": {
 									"name": "CognitoAuthorizer"
 								}
-							}
+							},
+							"resolvedMethod": "DELETE",
+							"resolvedPath": "/users"
 						}
 					],
-					"name": "waiterapp-dev-deleteUser"
+					"name": "waiterapp-dev-deleteUser",
+					"environment": {
+						"NODE_OPTIONS": "--enable-source-maps"
+					},
+					"package": {
+						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-deleteUser.zip"
+					},
+					"memory": 1024,
+					"timeout": 6,
+					"runtime": "nodejs20.x",
+					"vpc": {},
+					"versionLogicalId": "DeleteUserLambdaVersionYKSzXNgmtXaxabov3dqXTP5rZATUuIayVMWsaKweNw4"
 				},
 				"listUsers": {
 					"handler": "src/server/functions/users/listUsers.handler",
@@ -350,10 +1419,23 @@
 								"authorizer": {
 									"name": "CognitoAuthorizer"
 								}
-							}
+							},
+							"resolvedMethod": "GET",
+							"resolvedPath": "/users"
 						}
 					],
-					"name": "waiterapp-dev-listUsers"
+					"name": "waiterapp-dev-listUsers",
+					"environment": {
+						"NODE_OPTIONS": "--enable-source-maps"
+					},
+					"package": {
+						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-listUsers.zip"
+					},
+					"memory": 1024,
+					"timeout": 6,
+					"runtime": "nodejs20.x",
+					"vpc": {},
+					"versionLogicalId": "ListUsersLambdaVersionyxxxrnarWmykxavLJa5gDKMtc8UFFjMPdZQbIWU"
 				},
 				"updateUser": {
 					"handler": "src/server/functions/users/updateUser.handler",
@@ -365,7 +1447,9 @@
 								"authorizer": {
 									"name": "CognitoAuthorizer"
 								}
-							}
+							},
+							"resolvedMethod": "PUT",
+							"resolvedPath": "/users/{userId}"
 						}
 					],
 					"name": "waiterapp-dev-updateUser",
@@ -374,18 +1458,21 @@
 					},
 					"package": {
 						"artifact": "/Users/pedro/Documents/dev/projects/waiterapp/api/.serverless/build/waiterapp-updateUser.zip"
-					}
+					},
+					"memory": 1024,
+					"timeout": 6,
+					"runtime": "nodejs20.x",
+					"vpc": {},
+					"versionLogicalId": "UpdateUserLambdaVersiondhZgZDwGTmjkBPhvMOAquYW9kCm8ciAA5Hl7SAcbUQ"
 				}
 			}
 		},
-		"serviceRawFile": "service: waiterapp\nframeworkVersion: \"4\"\n\npackage:\n  individually: true\n\nprovider:\n  name: aws\n  region: us-east-1\n  runtime: nodejs20.x\n  deploymentMethod: direct\n  architecture: arm64\n  environment:\n    COGNITO_CLIENT_ID: !Ref WaiterAppUserPoolClient\n    COGNITO_USER_POOL_ID: !Ref WaiterAppUserPool\n  iam:\n    role:\n      statements:\n        - Effect: Allow\n          Action:\n            - dynamodb:PutItem\n            - dynamodb:DeleteItem\n            - dynamodb:GetItem\n            - dynamodb:UpdateItem\n            - dynamodb:Query\n          Resource:\n            - !Sub \"${WaiterAppTable.Arn}\"\n            - !Sub \"${WaiterAppTable.Arn}/index/*\"\n        - Effect: Allow\n          Action:\n            - cognito-idp:AdminDeleteUser\n            - cognito-idp:AdminUpdateUserAttributes\n          Resource:\n            - !GetAtt WaiterAppUserPool.Arn\n  httpApi:\n    authorizers:\n      CognitoAuthorizer:\n        type: jwt\n        identitySource: $request.header.Authorization\n        issuerUrl: !GetAtt WaiterAppUserPool.ProviderURL\n        audience:\n          - !Ref WaiterAppUserPoolClient\ncustom:\n  bundle: true\n  minify: true\n  sourcemap: false\n  target: node20\n  esbuild:\n    exclude:\n      - \"@aws-sdk/*\"\n  define:\n    require.resolve: undefined\n  platform: node\n  concurrency: 10\n\nresources:\n  Resources:\n    WaiterAppUserPool:\n      Type: AWS::Cognito::UserPool\n      Properties:\n        UserPoolName: WaiterAppUserPool\n        MfaConfiguration: OFF\n        AutoVerifiedAttributes:\n          - email\n        AdminCreateUserConfig:\n          AllowAdminCreateUserOnly: false\n        UsernameAttributes:\n          - email\n        AccountRecoverySetting:\n          RecoveryMechanisms:\n            - Name: \"verified_email\"\n              Priority: 1\n        Policies:\n          PasswordPolicy:\n            MinimumLength: 8\n            RequireLowercase: false\n            RequireNumbers: false\n            RequireSymbols: false\n            RequireUppercase: false\n            TemporaryPasswordValidityDays: 7\n        Schema:\n          - Name: name\n            Mutable: true\n            Required: true\n            AttributeDataType: String\n          - Name: role\n            Mutable: true\n            Required: false\n            AttributeDataType: String\n    WaiterAppUserPoolClient:\n      Type: AWS::Cognito::UserPoolClient\n      Properties:\n        ClientName: WaiterAppUserPoolClient\n        UserPoolId: !Ref WaiterAppUserPool\n        ExplicitAuthFlows:\n          - ALLOW_USER_PASSWORD_AUTH\n          - ALLOW_REFRESH_TOKEN_AUTH\n        TokenValidityUnits:\n          AccessToken: hours\n          RefreshToken: hours\n        AccessTokenValidity: 3\n        RefreshTokenValidity: 168 # 7 days\n    WaiterAppTable:\n      Type: AWS::DynamoDB::Table\n      Properties:\n        TableName: WaiterAppTable\n        BillingMode: PAY_PER_REQUEST\n        PointInTimeRecoverySpecification:\n          PointInTimeRecoveryEnabled: true\n        AttributeDefinitions:\n          - AttributeName: PK\n            AttributeType: S\n          - AttributeName: SK\n            AttributeType: S\n          - AttributeName: GSI1PK\n            AttributeType: S\n          - AttributeName: GSI1SK\n            AttributeType: S\n        KeySchema:\n          - AttributeName: PK\n            KeyType: HASH\n          - AttributeName: SK\n            KeyType: RANGE\n        GlobalSecondaryIndexes:\n          - IndexName: GSI1PK-GSI1SK-index\n            KeySchema:\n              - AttributeName: GSI1PK\n                KeyType: HASH\n              - AttributeName: GSI1SK\n                KeyType: RANGE\n            Projection:\n              ProjectionType: ALL\nfunctions:\n  accountConfirmation:\n    handler: src/server/functions/auth/accountConfirmation.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/account-confirmation\n  signIn:\n    handler: src/server/functions/auth/signIn.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/sign-in\n  refreshToken:\n    handler: src/server/functions/auth/refreshToken.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/refresh-token\n  forgotPassword:\n    handler: src/server/functions/auth/forgotPassword.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/forgot-password\n  resetPassword:\n    handler: src/server/functions/auth/resetPassword.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/reset-password\n  createUser:\n    handler: src/server/functions/users/createUser.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /users\n          authorizer:\n            name: CognitoAuthorizer\n  deleteUser:\n    handler: src/server/functions/users/deleteUser.handler\n    events:\n      - httpApi:\n          method: DELETE\n          path: /users\n          authorizer:\n            name: CognitoAuthorizer\n  listUsers:\n    handler: src/server/functions/users/listUsers.handler\n    events:\n      - httpApi:\n          method: GET\n          path: /users\n          authorizer:\n            name: CognitoAuthorizer\n  updateUser:\n    handler: src/server/functions/users/updateUser.handler\n    events:\n      - httpApi:\n          method: PUT\n          path: /users/{userId}\n          authorizer:\n            name: CognitoAuthorizer\n\n",
-		"command": ["deploy", "function"],
-		"options": {
-			"function": "updateUser"
-		},
+		"serviceRawFile": "service: waiterapp\nframeworkVersion: \"4\"\n\npackage:\n  individually: true\n\nprovider:\n  name: aws\n  region: us-east-1\n  runtime: nodejs20.x\n  deploymentMethod: direct\n  architecture: arm64\n  environment:\n    COGNITO_CLIENT_ID: !Ref WaiterAppUserPoolClient\n    COGNITO_USER_POOL_ID: !Ref WaiterAppUserPool\n  iam:\n    role:\n      statements:\n        - Effect: Allow\n          Action:\n            - dynamodb:PutItem\n            - dynamodb:DeleteItem\n            - dynamodb:GetItem\n            - dynamodb:UpdateItem\n            - dynamodb:Query\n          Resource:\n            - !Sub \"${WaiterAppTable.Arn}\"\n            - !Sub \"${WaiterAppTable.Arn}/index/*\"\n        - Effect: Allow\n          Action:\n            - cognito-idp:AdminDeleteUser\n            - cognito-idp:AdminUpdateUserAttributes\n          Resource:\n            - !GetAtt WaiterAppUserPool.Arn\n  httpApi:\n    authorizers:\n      CognitoAuthorizer:\n        type: jwt\n        identitySource: $request.header.Authorization\n        issuerUrl: !GetAtt WaiterAppUserPool.ProviderURL\n        audience:\n          - !Ref WaiterAppUserPoolClient\ncustom:\n  bundle: true\n  minify: true\n  sourcemap: false\n  target: node20\n  esbuild:\n    exclude:\n      - \"@aws-sdk/*\"\n  define:\n    require.resolve: undefined\n  platform: node\n  concurrency: 10\n\nresources:\n  Resources:\n    WaiterAppUserPool:\n      Type: AWS::Cognito::UserPool\n      Properties:\n        UserPoolName: WaiterAppUserPool\n        MfaConfiguration: OFF\n        AutoVerifiedAttributes:\n          - email\n        AdminCreateUserConfig:\n          AllowAdminCreateUserOnly: false\n        UsernameAttributes:\n          - email\n        AccountRecoverySetting:\n          RecoveryMechanisms:\n            - Name: \"verified_email\"\n              Priority: 1\n        Policies:\n          PasswordPolicy:\n            MinimumLength: 8\n            RequireLowercase: false\n            RequireNumbers: false\n            RequireSymbols: false\n            RequireUppercase: false\n            TemporaryPasswordValidityDays: 7\n        Schema:\n          - Name: name\n            Mutable: true\n            Required: true\n            AttributeDataType: String\n          - Name: role\n            Mutable: true\n            Required: false\n            AttributeDataType: String\n    WaiterAppUserPoolClient:\n      Type: AWS::Cognito::UserPoolClient\n      Properties:\n        ClientName: WaiterAppUserPoolClient\n        UserPoolId: !Ref WaiterAppUserPool\n        ExplicitAuthFlows:\n          - ALLOW_USER_PASSWORD_AUTH\n          - ALLOW_REFRESH_TOKEN_AUTH\n        TokenValidityUnits:\n          AccessToken: hours\n          RefreshToken: hours\n        AccessTokenValidity: 3\n        RefreshTokenValidity: 168 # 7 days\n    WaiterAppTable:\n      Type: AWS::DynamoDB::Table\n      Properties:\n        TableName: WaiterAppTable\n        BillingMode: PAY_PER_REQUEST\n        PointInTimeRecoverySpecification:\n          PointInTimeRecoveryEnabled: true\n        AttributeDefinitions:\n          - AttributeName: PK\n            AttributeType: S\n          - AttributeName: SK\n            AttributeType: S\n          - AttributeName: GSI1PK\n            AttributeType: S\n          - AttributeName: GSI1SK\n            AttributeType: S\n        KeySchema:\n          - AttributeName: PK\n            KeyType: HASH\n          - AttributeName: SK\n            KeyType: RANGE\n        GlobalSecondaryIndexes:\n          - IndexName: GSI1PK-GSI1SK-index\n            KeySchema:\n              - AttributeName: GSI1PK\n                KeyType: HASH\n              - AttributeName: GSI1SK\n                KeyType: RANGE\n            Projection:\n              ProjectionType: ALL\nfunctions:\n  accountConfirmation:\n    handler: src/server/functions/auth/accountConfirmation.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/account-confirmation\n          authorizer:\n            name: CognitoAuthorizer\n  signIn:\n    handler: src/server/functions/auth/signIn.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/sign-in\n  refreshToken:\n    handler: src/server/functions/auth/refreshToken.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/refresh-token\n  forgotPassword:\n    handler: src/server/functions/auth/forgotPassword.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/forgot-password\n  resetPassword:\n    handler: src/server/functions/auth/resetPassword.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /auth/reset-password\n  createUser:\n    handler: src/server/functions/users/createUser.handler\n    events:\n      - httpApi:\n          method: POST\n          path: /users\n          authorizer:\n            name: CognitoAuthorizer\n  deleteUser:\n    handler: src/server/functions/users/deleteUser.handler\n    events:\n      - httpApi:\n          method: DELETE\n          path: /users\n          authorizer:\n            name: CognitoAuthorizer\n  listUsers:\n    handler: src/server/functions/users/listUsers.handler\n    events:\n      - httpApi:\n          method: GET\n          path: /users\n          authorizer:\n            name: CognitoAuthorizer\n  updateUser:\n    handler: src/server/functions/users/updateUser.handler\n    events:\n      - httpApi:\n          method: PUT\n          path: /users/{userId}\n          authorizer:\n            name: CognitoAuthorizer\n\n",
+		"command": ["deploy"],
+		"options": {},
 		"error": null,
 		"params": {},
-		"machineId": "4fc13bc1072eef603fde8da41d0700c0",
+		"machineId": "dd7482ef33bdb31c3ddc9eb6111608d0",
 		"stage": "dev",
 		"accessKeyV2": "<REDACTED>",
 		"accessKeyV1": "<REDACTED>",
@@ -414,60 +1501,60 @@
 		"serviceUniqueId": "arn:aws:cloudformation:us-east-1:356975246949:stack/waiterapp-dev/b54ebdd0-843e-11ef-92b9-0affca4126ff",
 		"serviceProviderAwsCfStackId": "arn:aws:cloudformation:us-east-1:356975246949:stack/waiterapp-dev/b54ebdd0-843e-11ef-92b9-0affca4126ff",
 		"serviceProviderAwsCfStackCreated": "2024-10-06T23:57:13.763Z",
-		"serviceProviderAwsCfStackUpdated": "2024-10-16T22:46:03.492Z",
+		"serviceProviderAwsCfStackUpdated": "2024-10-17T11:22:10.531Z",
 		"serviceProviderAwsCfStackStatus": "UPDATE_COMPLETE",
 		"serviceProviderAwsCfStackOutputs": [
 			{
 				"OutputKey": "AccountConfirmationLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-accountConfirmation:26",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-accountConfirmation:33",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-AccountConfirmationLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "DeleteUserLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-deleteUser:16",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-deleteUser:23",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-DeleteUserLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "SignInLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-signIn:33",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-signIn:40",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-SignInLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "ListUsersLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-listUsers:8",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-listUsers:15",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-ListUsersLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "ResetPasswordLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-resetPassword:23",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-resetPassword:30",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-ResetPasswordLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "UpdateUserLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-updateUser:4",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-updateUser:10",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-UpdateUserLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "RefreshTokenLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-refreshToken:24",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-refreshToken:31",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-RefreshTokenLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "ForgotPasswordLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-forgotPassword:23",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-forgotPassword:30",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-ForgotPasswordLambdaFunctionQualifiedArn"
 			},
 			{
 				"OutputKey": "CreateUserLambdaFunctionQualifiedArn",
-				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-createUser:17",
+				"OutputValue": "arn:aws:lambda:us-east-1:356975246949:function:waiterapp-dev-createUser:24",
 				"Description": "Current Lambda function version",
 				"ExportName": "sls-waiterapp-dev-CreateUserLambdaFunctionQualifiedArn"
 			},

@@ -4,10 +4,10 @@ import {
 	requestAdapter,
 	responseAdapter
 } from '@/server/adapters';
-import type { APIGatewayProxyEventV2 } from 'aws-lambda';
+import type { APIGatewayProxyEventV2WithJWTAuthorizer } from 'aws-lambda';
 
 export async function handler(
-	event: APIGatewayProxyEventV2
+	event: APIGatewayProxyEventV2WithJWTAuthorizer
 ): Promise<ILambdaResponse> {
 	const controller = makeAccountConfirmationController();
 
