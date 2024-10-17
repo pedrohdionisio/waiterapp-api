@@ -12,8 +12,21 @@ export interface IDeleteUserDTO {
 	userId: string;
 }
 
+export interface IUpdateUserDTO {
+	id: string;
+	name: string;
+	email: string;
+	role: UserRoleType;
+}
+
+export interface IGetUserByIdDTO {
+	id: string;
+}
+
 export interface IUsersRepository {
 	create(dto: ICreateUserDTO): Promise<void>;
 	delete(dto: IDeleteUserDTO): Promise<void>;
 	list(): Promise<IUser[]>;
+	getUserById(dto: IGetUserByIdDTO): Promise<IUser>;
+	update(dto: IUpdateUserDTO): Promise<void>;
 }

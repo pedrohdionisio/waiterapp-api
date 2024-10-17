@@ -6,4 +6,5 @@ export interface IUser {
 	email: string;
 	role: UserRoleType;
 	externalId: string;
+	password?: string;
 }

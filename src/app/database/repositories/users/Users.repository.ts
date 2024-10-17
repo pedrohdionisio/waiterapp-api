@@ -2,20 +2,25 @@ import type { IUser } from '@/app/entities';
 import { addPrefix } from '@/app/utils';
 import {
 	AdminDeleteUserCommand,
+	AdminUpdateUserAttributesCommand,
 	type CognitoIdentityProviderClient,
 	SignUpCommand
 } from '@aws-sdk/client-cognito-identity-provider';
 import {
 	DeleteCommand,
 	type DynamoDBDocumentClient,
+	GetCommand,
 	PutCommand,
 	QueryCommand,
-	type QueryCommandOutput
+	type QueryCommandOutput,
+	UpdateCommand
 } from '@aws-sdk/lib-dynamodb';
 import { ulid } from 'ulid';
 import type {
 	ICreateUserDTO,
 	IDeleteUserDTO,
+	IGetUserByIdDTO,
+	IUpdateUserDTO,
 	IUsersRepository
 } from './UsersRepository.types';
 
@@ -119,5 +124,66 @@ export class UsersRepository implements IUsersRepository {
 				role: item.role
 			};
 		});
+	}
+
+	async getUserById(dto: IGetUserByIdDTO): Promise<IUser> {
+		const dynamoGetCommand = new GetCommand({
+			TableName: 'WaiterAppTable',
+			Key: {
+				PK: addPrefix('user', dto.id),
+				SK: addPrefix('user', dto.id)
+			}
+		});
+
+		const { Item } = (await this.dynamoClient.send(dynamoGetCommand)) as Omit<
+			QueryCommandOutput,
+			'Item'
+		> & { Item: IUser };
+
+		return Item;
+	}
+
+	async update(dto: IUpdateUserDTO): Promise<void> {
+		const cognitoCommand = new AdminUpdateUserAttributesCommand({
+			Username: dto.email,
+			UserPoolId: process.env.COGNITO_USER_POOL_ID,
+			UserAttributes: [
+				{
+					Name: 'name',
+					Value: dto.name
+				},
+				{
+					Name: 'email',
+					Value: dto.email
+				},
+				{
+					Name: 'custom:role',
+					Value: dto.role
+				}
+			]
+		});
+
+		await this.cognitoClient.send(cognitoCommand);
+
+		const dynamoPutCommand = new UpdateCommand({
+			TableName: 'WaiterAppTable',
+			Key: {
+				PK: addPrefix('user', dto.id),
+				SK: addPrefix('user', dto.id)
+			},
+			UpdateExpression: 'set #n = :n, #e = :e, #r = :r',
+			ExpressionAttributeValues: {
+				':n': dto.name,
+				':e': dto.email,
+				':r': dto.role
+			},
+			ExpressionAttributeNames: {
+				'#n': 'name',
+				'#e': 'email',
+				'#r': 'role'
+			}
+		});
+
+		await this.dynamoClient.send(dynamoPutCommand);
 	}
 }
