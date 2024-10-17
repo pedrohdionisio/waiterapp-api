@@ -1,4 +1,4 @@
-import { makeAccountConfirmationController } from '@/factories/controllers/auth';
+import { makeMeController } from '@/factories/controllers/users';
 import {
 	type ILambdaResponse,
 	protectedRequestAdapter,
@@ -9,7 +9,7 @@ import type { APIGatewayProxyEventV2WithJWTAuthorizer } from 'aws-lambda';
 export async function handler(
 	event: APIGatewayProxyEventV2WithJWTAuthorizer
 ): Promise<ILambdaResponse> {
-	const controller = makeAccountConfirmationController();
+	const controller = makeMeController();
 
 	const response = await controller.handle(protectedRequestAdapter(event));
 

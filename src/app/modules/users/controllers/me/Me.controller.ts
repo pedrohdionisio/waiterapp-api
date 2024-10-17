@@ -1,13 +1,15 @@
-import type { IListUsersService } from '@/app/modules/users/services/list-users/ListUsersService.types';
-import type { IController, IResponse } from '@/app/types';
+import type { IMeService } from '@/app/modules/users/services/me/MeService.types';
+import type { IController, IProtectedRequest, IResponse } from '@/app/types';
 import { NotAuthorizedException } from '@aws-sdk/client-cognito-identity-provider';
 
-export class ListUsersController implements IController {
-	constructor(private readonly listUsersService: IListUsersService) {}
+export class MeController implements IController {
+	constructor(private readonly meService: IMeService) {}
 
-	async handle(): Promise<IResponse> {
+	async handle(request: IProtectedRequest): Promise<IResponse> {
 		try {
-			const response = await this.listUsersService.execute();
+			const response = await this.meService.execute({
+				id: request.jwt.claims.sub as string
+			});
 
 			return {
 				body: { ...response },

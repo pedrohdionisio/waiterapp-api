@@ -1,6 +1,6 @@
 import { ResetPasswordSchema } from '@/app/modules/auth/schemas';
 import type { IResetPasswordService } from '@/app/modules/auth/services/reset-password/ResetPasswordService.types';
-import type { IController, IRequest, IResponse } from '@/app/types';
+import type { IController, IPublicRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import {
 	CodeMismatchException,
@@ -11,7 +11,7 @@ import {
 export class ResetPasswordController implements IController {
 	constructor(private readonly resetPasswordService: IResetPasswordService) {}
 
-	async handle(request: IRequest): Promise<IResponse> {
+	async handle(request: IPublicRequest): Promise<IResponse> {
 		try {
 			const parsedBody = parseSchema(ResetPasswordSchema, request.body);
 

@@ -1,6 +1,6 @@
 import { DeleteUserSchema } from '@/app/modules/users/schemas';
 import type { IDeleteUserService } from '@/app/modules/users/services/delete-user/DeleteUserService.types';
-import type { IController, IRequest, IResponse } from '@/app/types';
+import type { IController, IProtectedRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import {
 	NotAuthorizedException,
@@ -10,7 +10,7 @@ import {
 export class DeleteUserController implements IController {
 	constructor(private readonly deleteUserService: IDeleteUserService) {}
 
-	async handle(request: IRequest): Promise<IResponse> {
+	async handle(request: IProtectedRequest): Promise<IResponse> {
 		try {
 			const parsedBody = parseSchema(DeleteUserSchema, request.body);
 

@@ -1,7 +1,9 @@
 import type { IUser } from '@/app/entities';
+import { AppError } from '@/app/errors';
 import { addPrefix } from '@/app/utils';
 import {
 	AdminDeleteUserCommand,
+	AdminGetUserCommand,
 	AdminUpdateUserAttributesCommand,
 	type CognitoIdentityProviderClient,
 	SignUpCommand
@@ -19,6 +21,7 @@ import { ulid } from 'ulid';
 import type {
 	ICreateUserDTO,
 	IDeleteUserDTO,
+	IGetLoggedUserDTO,
 	IGetUserByIdDTO,
 	IUpdateUserDTO,
 	IUsersRepository
@@ -91,17 +94,63 @@ export class UsersRepository implements IUsersRepository {
 		await this.dynamoClient.send(dynamoCommand);
 	}
 
+	async getLoggedUser(dto: IGetLoggedUserDTO): Promise<IUser> {
+		const cognitoCommand = new AdminGetUserCommand({
+			Username: dto.id,
+			UserPoolId: process.env.COGNITO_USER_POOL_ID
+		});
+
+		const { UserAttributes } = await this.cognitoClient.send(cognitoCommand);
+
+		if (!UserAttributes) {
+			throw new AppError('User not found.', 404);
+		}
+
+		const dynamoCommand = new QueryCommand({
+			TableName: 'WaiterAppTable',
+			IndexName: 'GSI1PK-GSI1SK-index',
+			KeyConditionExpression: '#GSI1PKEY = :pkey and #GSI1SKEY = :skey',
+			ExpressionAttributeValues: {
+				':pkey': 'USERS',
+				':skey': addPrefix('user', UserAttributes[0].Value as string)
+			},
+			ExpressionAttributeNames: {
+				'#GSI1PKEY': 'GSI1PK',
+				'#GSI1SKEY': 'GSI1SK'
+			},
+			Limit: 1,
+			ScanIndexForward: false
+		});
+
+		const { Items } = (await this.dynamoClient.send(dynamoCommand)) as Omit<
+			QueryCommandOutput,
+			'Item'
+		> & { Items: IUser[] };
+
+		if (!Items) {
+			return {} as IUser;
+		}
+
+		return {
+			name: Items[0].name,
+			email: Items[0].email,
+			externalId: Items[0].externalId,
+			id: Items[0].id,
+			role: Items[0].role
+		};
+	}
+
 	async list(): Promise<IUser[]> {
 		const command = new QueryCommand({
 			TableName: 'WaiterAppTable',
 			ScanIndexForward: false,
 			IndexName: 'GSI1PK-GSI1SK-index',
-			KeyConditionExpression: '#DDB_GSI1PK = :pkey',
+			KeyConditionExpression: '#GSI1PKEY = :pkey',
 			ExpressionAttributeValues: {
 				':pkey': 'USERS'
 			},
 			ExpressionAttributeNames: {
-				'#DDB_GSI1PK': 'GSI1PK'
+				'#GSI1PKEY': 'GSI1PK'
 			},
 			Limit: 100
 		});

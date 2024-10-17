@@ -30,6 +30,7 @@ provider:
           Action:
             - cognito-idp:AdminDeleteUser
             - cognito-idp:AdminUpdateUserAttributes
+            - cognito-idp:AdminGetUser
           Resource:
             - !GetAtt WaiterAppUserPool.Arn
   httpApi:
@@ -185,6 +186,14 @@ functions:
       - httpApi:
           method: GET
           path: /users
+          authorizer:
+            name: CognitoAuthorizer
+  me:
+    handler: src/server/functions/users/me.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /users/me
           authorizer:
             name: CognitoAuthorizer
   updateUser:

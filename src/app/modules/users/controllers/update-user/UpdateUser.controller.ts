@@ -1,7 +1,7 @@
 import { AppError } from '@/app/errors';
 import { UpdateUserSchema } from '@/app/modules/users/schemas';
 import type { IUpdateUserService } from '@/app/modules/users/services/update-user/UpdateUserService.types';
-import type { IController, IRequest, IResponse } from '@/app/types';
+import type { IController, IProtectedRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import {
 	NotAuthorizedException,
@@ -12,7 +12,7 @@ import {
 export class UpdateUserController implements IController {
 	constructor(private readonly updateUserService: IUpdateUserService) {}
 
-	async handle(request: IRequest): Promise<IResponse> {
+	async handle(request: IProtectedRequest): Promise<IResponse> {
 		try {
 			const parsedBody = parseSchema(UpdateUserSchema, request.body);
 			const { userId } = request.params;

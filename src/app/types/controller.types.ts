@@ -1,5 +1,5 @@
-import type { IRequest, IResponse } from './';
+import type { IProtectedRequest, IPublicRequest, IResponse } from './';
 
 export interface IController {
-	handle(request: IRequest): Promise<IResponse>;
+	handle(request: IPublicRequest | IProtectedRequest): Promise<IResponse>;
 }

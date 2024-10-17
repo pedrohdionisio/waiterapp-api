@@ -23,10 +23,15 @@ export interface IGetUserByIdDTO {
 	id: string;
 }
 
+export interface IGetLoggedUserDTO {
+	id: string;
+}
+
 export interface IUsersRepository {
 	create(dto: ICreateUserDTO): Promise<void>;
 	delete(dto: IDeleteUserDTO): Promise<void>;
 	list(): Promise<IUser[]>;
 	getUserById(dto: IGetUserByIdDTO): Promise<IUser>;
+	getLoggedUser(dto: IGetLoggedUserDTO): Promise<IUser>;
 	update(dto: IUpdateUserDTO): Promise<void>;
 }

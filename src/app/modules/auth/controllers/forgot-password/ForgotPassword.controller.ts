@@ -1,13 +1,13 @@
 import { ForgotPasswordSchema } from '@/app/modules/auth/schemas';
 import type { IForgotPasswordService } from '@/app/modules/auth/services/forgot-password/ForgotPasswordService.types';
-import type { IController, IRequest, IResponse } from '@/app/types';
+import type { IController, IPublicRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import { UserNotFoundException } from '@aws-sdk/client-cognito-identity-provider';
 
 export class ForgotPasswordController implements IController {
 	constructor(private readonly forgotPasswordService: IForgotPasswordService) {}
 
-	async handle(request: IRequest): Promise<IResponse> {
+	async handle(request: IPublicRequest): Promise<IResponse> {
 		try {
 			const parsedBody = parseSchema(ForgotPasswordSchema, request.body);
 

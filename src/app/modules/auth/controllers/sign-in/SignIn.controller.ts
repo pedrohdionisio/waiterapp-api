@@ -1,6 +1,6 @@
 import { SignInSchema } from '@/app/modules/auth/schemas';
 import type { ISignInService } from '@/app/modules/auth/services/sign-in/SignInService.types';
-import type { IController, IRequest, IResponse } from '@/app/types';
+import type { IController, IProtectedRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import {
 	InvalidParameterException,
@@ -11,7 +11,7 @@ import {
 export class SignInController implements IController {
 	constructor(private readonly signInService: ISignInService) {}
 
-	async handle(request: IRequest): Promise<IResponse> {
+	async handle(request: IProtectedRequest): Promise<IResponse> {
 		try {
 			const parsedBody = parseSchema(SignInSchema, request.body);
 

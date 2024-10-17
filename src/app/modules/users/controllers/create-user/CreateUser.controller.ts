@@ -1,6 +1,6 @@
 import { CreateUserSchema } from '@/app/modules/users/schemas';
 import type { ICreateUserService } from '@/app/modules/users/services/create-user/CreateUserService.types';
-import type { IController, IRequest, IResponse } from '@/app/types';
+import type { IController, IProtectedRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import {
 	NotAuthorizedException,
@@ -10,7 +10,7 @@ import {
 export class CreateUserController implements IController {
 	constructor(private readonly createUserService: ICreateUserService) {}
 
-	async handle(request: IRequest): Promise<IResponse> {
+	async handle(request: IProtectedRequest): Promise<IResponse> {
 		try {
 			const parsedBody = parseSchema(CreateUserSchema, request.body);
 

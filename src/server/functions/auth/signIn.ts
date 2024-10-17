@@ -1,7 +1,7 @@
 import { makeSignInController } from '@/factories/controllers/auth';
 import {
 	type ILambdaResponse,
-	requestAdapter,
+	publicRequestAdapter,
 	responseAdapter
 } from '@/server/adapters';
 import type { APIGatewayProxyEventV2 } from 'aws-lambda';
@@ -11,7 +11,7 @@ export async function handler(
 ): Promise<ILambdaResponse> {
 	const controller = makeSignInController();
 
-	const response = await controller.handle(requestAdapter(event));
+	const response = await controller.handle(publicRequestAdapter(event));
 
 	return responseAdapter(response);
 }

@@ -1,6 +1,6 @@
 import { AccountConfirmationSchema } from '@/app/modules/auth/schemas';
 import type { IAccountConfirmationService } from '@/app/modules/auth/services/account-confirmation/AccountConfirmationService.types';
-import type { IController, IRequest, IResponse } from '@/app/types';
+import type { IController, IProtectedRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import {
 	CodeMismatchException,
@@ -13,7 +13,7 @@ export class AccountConfirmationController implements IController {
 		private readonly accountConfirmationService: IAccountConfirmationService
 	) {}
 
-	async handle(request: IRequest): Promise<IResponse> {
+	async handle(request: IProtectedRequest): Promise<IResponse> {
 		try {
 			const parsedBody = parseSchema(AccountConfirmationSchema, request.body);
 

@@ -1,6 +1,6 @@
 import { RefreshTokenSchema } from '@/app/modules/auth/schemas';
 import type { IRefreshTokenService } from '@/app/modules/auth/services/refresh-token/RefreshTokenService.types';
-import type { IController, IRequest, IResponse } from '@/app/types';
+import type { IController, IProtectedRequest, IResponse } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import {
 	InvalidParameterException,
@@ -10,7 +10,7 @@ import {
 export class RefreshTokenController implements IController {
 	constructor(private readonly refreshTokenService: IRefreshTokenService) {}
 
-	async handle(request: IRequest): Promise<IResponse> {
+	async handle(request: IProtectedRequest): Promise<IResponse> {
 		try {
 			const parsedBody = parseSchema(RefreshTokenSchema, request.body);
 
