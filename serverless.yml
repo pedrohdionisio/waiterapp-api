@@ -132,6 +132,7 @@ resources:
             Projection:
               ProjectionType: ALL
 functions:
+  ## AUTH
   accountConfirmation:
     handler: src/server/functions/auth/accountConfirmation.handler
     events:
@@ -164,6 +165,8 @@ functions:
       - httpApi:
           method: POST
           path: /auth/reset-password
+
+  ## USERS
   createUser:
     handler: src/server/functions/users/createUser.handler
     events:
@@ -202,6 +205,16 @@ functions:
       - httpApi:
           method: PUT
           path: /users/{userId}
+          authorizer:
+            name: CognitoAuthorizer
+
+  ## INGREDIENTS
+  createIngredient:
+    handler: src/server/functions/ingredients/createIngredient.handler
+    events:
+      - httpApi:
+          method: POST
+          path: /ingredients
           authorizer:
             name: CognitoAuthorizer
 
