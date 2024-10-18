@@ -217,4 +217,12 @@ functions:
           path: /ingredients
           authorizer:
             name: CognitoAuthorizer
+  listIngredients:
+    handler: src/server/functions/ingredients/listIngredients.handler
+    events:
+      - httpApi:
+          method: GET
+          path: /ingredients
+          authorizer:
+            name: CognitoAuthorizer
 
