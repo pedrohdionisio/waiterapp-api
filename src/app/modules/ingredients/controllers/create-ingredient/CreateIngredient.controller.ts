@@ -8,6 +8,7 @@ import type {
 } from '@/app/types';
 import { parseSchema } from '@/app/utils';
 import { NotAuthorizedException } from '@aws-sdk/client-cognito-identity-provider';
+import { ConditionalCheckFailedException } from '@aws-sdk/client-dynamodb';
 
 export class CreateIngredientController implements IController {
 	constructor(
@@ -34,6 +35,15 @@ export class CreateIngredientController implements IController {
 				statusCode: 201
 			};
 		} catch (error) {
+			if (error instanceof ConditionalCheckFailedException) {
+				return {
+					statusCode: 409,
+					body: {
+						error: 'Ingredient already exists.'
+					}
+				};
+			}
+
 			if (error instanceof NotAuthorizedException) {
 				return {
 					statusCode: 401,

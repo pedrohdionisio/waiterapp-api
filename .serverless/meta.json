@@ -94,12 +94,12 @@
 						"Runtime": "nodejs20.x",
 						"Role": "arn:aws:iam::356975246949:role/waiterapp-dev-us-east-1-lambdaRole",
 						"Handler": "src/server/functions/ingredients/createIngredient.handler",
-						"CodeSize": 79890,
+						"CodeSize": 86065,
 						"Description": "",
 						"Timeout": 6,
 						"MemorySize": 1024,
-						"LastModified": "2024-10-17T21:41:18.504+0000",
-						"CodeSha256": "BF5GAZYxf9cG0PymU7qs2PwtT9wcY8yZV6eSzSZHGBo=",
+						"LastModified": "2024-10-18T21:51:08.000+0000",
+						"CodeSha256": "VjDUTZs/H/1tI25SFStpa+FHVvek0DUctKH2M1ymlwI=",
 						"Version": "$LATEST",
 						"Environment": {
 							"Variables": {
@@ -113,7 +113,7 @@
 							"Mode": "PassThrough"
 						},
 						"MasterArn": null,
-						"RevisionId": "8e7669e0-9cc2-4baa-a1c5-38afc7469648",
+						"RevisionId": "14fe80fb-79dd-4217-8dae-27953b5de877",
 						"State": "Active",
 						"StateReason": null,
 						"StateReasonCode": null,
@@ -144,7 +144,7 @@
 					},
 					"Code": {
 						"RepositoryType": "S3",
-						"Location": "https://prod-iad-c1-djusa-tasks.s3.us-east-1.amazonaws.com/snapshots/356975246949/waiterapp-dev-createIngredient-4bef243b-5089-4373-bd24-ffe08f534f95?versionId=y_8xmjraxdLaTxh8nRyVfduABSw48hPY&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEM7%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQD8yv3dy0nvITsE%2BSd0NEYS%2F3kXK6XDcDcjYIqL%2B173vwIhAOrOLOOI4IKUGbN%2BluNnC%2BKuHI3yp6oL9p7Kno3JYc6lKrkFCDcQBBoMNDc5MjMzMDI1Mzc5IgydnkOixzab%2BC%2FfdmYqlgVWci1Wyjgvn%2FosHQfYnr5hJYNYmXYwNM76%2F6JArqnkLAVh03V5SqBrEJLVX1w8tEbX%2B9O7vHTYThEC5m3Qj2Mn3CTcni8XZ21uOqOFjOhcOfqei8Mbfjw9xjDoow%2F0Wm8JKN0eKUa9BDOyf7VbYJsmCxgbCu67mlASEsUKA8E5GKiIqrdALEryDAn3xxrgzPhFyhdJMurb%2FE65hXAd79Igas5fALM%2BiiJqmEc1Wri8e5HEnpggB7RwQkn7TIgvKd6FQUPc9zmwsNNGdGboYOuFFgD2QQdCHki0o%2Bz6bo6naJtH7n4RKmNwXdIcqJclLyEy7qn5plnx12nNa%2BAujruR2bGTOPdKG72UuSYJzYd%2B0hwsrTWQpmIJUl5p1aiTkHBZATP99LmsjVIT6Ayg25vJVtNVdO0GrUrXh9KXiL%2B9FGVitCPAlDlyu1YOvlNIa4m%2BPz%2BL1L3Y92lXrBIIT2sZuwKDA3dIf17M9SithdMioqXdsnfmW3EDgUO0FBQTtuLvScP8ngZKSZqgdiVTcaAQNIZ5PuG5R2YF%2F6eE00SbnWzSuNvvILgxJ9ObVp2ovB44UZUpFT4WlAGHSSRTJWK32rW3XIihEmdBj0%2Bl3zWbto0%2FAa%2FCyihM8n%2FpdJdfunJmfLUQ8fYkxxGTBIY0ICCxuiIElaOK7AvtfLOOZi4iUKpGejEdTS%2Bo1AcCvHozXJtDD%2FksqV07pZUiWwcjh%2BWnK4CDIMfQHXv7UJXXc5EHYPrwGfTFnmuAn%2BXxUrZ59g9VjR2CQHpYv62tnHlImE%2FH%2BJ4NPIXVp7%2Bxpsb51DAX890ttgdWLUKCyXVbMmDrcqJzktz6lPQEkpZ2da38fhDGTgrvHxVpE3tRbZud%2F0VDy7rhAfihWDD4gsa4BjqwAbO9yUQy9MDx4HO8dGfNB6aJIwTgvq7%2F47gwxefmuAYu8kuefTg3ZoxUUuFgNY682g0OaBhmPzCGhI0HY5H7ADvqieA25v5AYHlRS%2FqwRGvDfIBqtU06ZFZ8Jjcs9Fs422T4Sqv1dMSXqtPcIxDq9f000%2FC4wjlafyX6KVEleRdgRU95tTXn%2BxwNo5J5GD8cIMaAJfQ%2Bb6VsUJ6iHzS5yIfg%2BPkCh%2F3X3trsbQbQ29pn&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241017T220200Z&X-Amz-SignedHeaders=host&X-Amz-Expires=600&X-Amz-Credential=ASIAW7FEDUVRR7WPRR57%2F20241017%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=d0a714281964f2c9fa2bdce1ffe484028b9a3f37f40fea88c72840dfcd22012f",
+						"Location": "https://prod-iad-c1-djusa-tasks.s3.us-east-1.amazonaws.com/snapshots/356975246949/waiterapp-dev-createIngredient-05f2ea9b-cf8b-4791-98d3-aa4431b98b38?versionId=SyWcXPd612NittDJEjK_EMdaxlYqVveJ&X-Amz-Security-Token=IQoJb3JpZ2luX2VjEOX%2F%2F%2F%2F%2F%2F%2F%2F%2F%2FwEaCXVzLWVhc3QtMSJIMEYCIQDmCfGlM%2BS8FGFhOFfrTPTgQn%2FSQMwvDI7g2fOUwi%2Bu1wIhANwoFXuBjYkbzXQkeiKjwRkzi3iUGliik0sK9mOYdcQUKroFCE4QBBoMNDc5MjMzMDI1Mzc5Igw3DNvB7tiDqXKnrRkqlwVSus3mYknLAtUcyv4bBIxHNY1sByLt5vNlcxdVYpUeByONE2UcDMr2rVaIA3QcyOvlM8%2Fv7H62%2FhdSN%2B1dXoHySZbCTi7R%2FXnZy5%2FXmGSoxxuki79SxauTbJElrcHr2OPxC7UOAjOGskftJlE2tm5dhS7sO27bNfGqOnxVfCuU5t6a0IaahW9m8hD50Q%2FYgvwe%2BZgvqjuMGRm1EUoh4m%2B9jfqrhwaJe3y%2B9AxGTjfxa0uS4LdfDm9fR2d1SfpubOzUGMrfx900rZkmZEsMsToeIDFTuSwr0zYZOjWulnyQ%2BFe0y9xCYIXHW9uFZPqrynknVN874rastld55fielHjPZEX8rmW%2FwEzYu4UQfJuK3%2F7pnbahtKwjVz4R%2Bl%2BrQFqC%2BJrUg8%2Fe8s89jQJCDAkKbU946c%2FoNtYI3kCFPIQjKSCVW9%2FfBY3j%2FYyOPOJd1T7qnGwD9arm%2BMuuD8kzQSCRc4zYEh8nJqdDS1L1NODFyg6AaB7T0EPYy%2FU2bhkxicYktTYj6weHfhAEeVUmrxKqqwViR2wKYvoP7ntOxfPt02QbNtYv8f8ewYhmLFyKMONHPrcn4bgbjJQf%2FZRvNhyK%2B0mkGyWgY4tXnWRH8r98yhpBF2jWYzO78%2ByIvCB9SNSXyKwYIfIMT8I5dQWHKlZXaEfbAPX4W7DaDthEDcjuoC1Mif0gUSrzQvlWYAlC97xf7JBtKHLfji33cFzWvs7MM%2BN2%2FHzyCpNzalXohnZmo9dZbe%2BEUucvfyOCu96Gh0YnKkaj0a3C1Ene8gWrHUBIFGPMipl3%2FySR0tXv7Nxjf30XWq%2BZJ8fHxRkMCnbzCCoAsTPF4m9LNh0GxZPU70etBzUCc%2FYc048npHHfJtAOjdJ3EEwVjDAwxo%2FLuAY6sAFBhGvTNWe69dNNBe%2Bu%2BM7J15as4qW9OhHhrU67ocnq4oWJbY4VGlYm2DAzbuRXbtuepChPVlzGp5QnjJc5JXS%2FHkED9ivcZB1WqZIOc%2BwJw70IxCoWr27rM0glk%2B%2Fp61H7H7METYhZA2XW3MeE%2Baifz8T1miGFupuddUxw11%2FLnDDNSKrg35nE7YD9IqLEDv%2FQILvIQ9w3dKCaf90u9jBFnmbASHRbEh99NqpHf30PPQ%3D%3D&X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Date=20241018T215255Z&X-Amz-SignedHeaders=host&X-Amz-Expires=599&X-Amz-Credential=ASIAW7FEDUVR5QW2BXSI%2F20241018%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Signature=1dc37fe4cf6879146869ab086cd53d29d350a6a4af9afa8c963a117f6a6e1e97",
 						"ImageUri": null,
 						"ResolvedImageUri": null
 					},
@@ -419,7 +419,7 @@
 		},
 		"error": null,
 		"params": {},
-		"machineId": "f2ab213d509b7d0bb907e19ca48ab8a9",
+		"machineId": "0a1d012f32e8b4fc5352f3164d09dcca",
 		"stage": "dev",
 		"accessKeyV2": "<REDACTED>",
 		"accessKeyV1": "<REDACTED>",

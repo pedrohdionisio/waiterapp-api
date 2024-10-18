@@ -14,10 +14,12 @@ export class IngredientsRepository implements IIngredientsRepository {
 
 		const dynamoCommand = new PutCommand({
 			TableName: 'WaiterAppTable',
+			ConditionExpression: 'attribute_not_exists(PK)',
 			Item: {
-				PK: addPrefix('ingredient', sortableId),
-				SK: addPrefix('ingredient', sortableId),
+				PK: 'INGREDIENTS',
+				SK: addPrefix('ingredient', dto.name),
 				GSI1PK: 'INGREDIENTS',
+				GSI1SK: addPrefix('ingredient', sortableId),
 				type: 'Ingredient',
 				id: sortableId,
 				name: dto.name,
