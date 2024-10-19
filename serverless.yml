@@ -233,4 +233,12 @@ functions:
           path: /ingredients
           authorizer:
             name: CognitoAuthorizer
+  updateIngredient:
+    handler: src/server/functions/ingredients/updateIngredient.handler
+    events:
+      - httpApi:
+          method: PUT
+          path: /ingredients/{ingredientId}
+          authorizer:
+            name: CognitoAuthorizer
 
