@@ -1,6 +1,7 @@
 import type { IIngredient } from '@/app/entities';
 import { addPrefix } from '@/app/utils';
 import {
+	DeleteCommand,
 	type DynamoDBDocumentClient,
 	PutCommand,
 	QueryCommand,
@@ -9,6 +10,7 @@ import {
 import { ulid } from 'ulid';
 import type {
 	ICreateIngredientDTO,
+	IDeleteIngredientDTO,
 	IIngredientsRepository
 } from './IngredientsRepository.types';
 
@@ -68,5 +70,17 @@ export class IngredientsRepository implements IIngredientsRepository {
 				icon: item.icon
 			};
 		});
+	}
+
+	async delete(dto: IDeleteIngredientDTO): Promise<void> {
+		const command = new DeleteCommand({
+			TableName: 'WaiterAppTable',
+			Key: {
+				PK: 'INGREDIENTS',
+				SK: addPrefix('ingredient', dto.name)
+			}
+		});
+
+		await this.dynamoClient.send(command);
 	}
 }

@@ -5,7 +5,12 @@ export interface ICreateIngredientDTO {
 	icon: string;
 }
 
+export interface IDeleteIngredientDTO {
+	name: string;
+}
+
 export interface IIngredientsRepository {
 	create(dto: ICreateIngredientDTO): Promise<void>;
 	list(): Promise<IIngredient[]>;
+	delete(dto: IDeleteIngredientDTO): Promise<void>;
 }

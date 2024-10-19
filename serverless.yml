@@ -225,4 +225,12 @@ functions:
           path: /ingredients
           authorizer:
             name: CognitoAuthorizer
+  deleteIngredient:
+    handler: src/server/functions/ingredients/deleteIngredient.handler
+    events:
+      - httpApi:
+          method: DELETE
+          path: /ingredients
+          authorizer:
+            name: CognitoAuthorizer
 
