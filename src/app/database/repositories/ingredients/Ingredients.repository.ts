@@ -26,7 +26,7 @@ export class IngredientsRepository implements IIngredientsRepository {
 			Item: {
 				PK: 'INGREDIENTS',
 				SK: addPrefix('ingredient', dto.name),
-				GSI1PK: 'INGREDIENTS',
+				GSI1PK: 'PRODUCTS',
 				GSI1SK: addPrefix('ingredient', sortableId),
 				type: 'Ingredient',
 				id: sortableId,
@@ -43,13 +43,12 @@ export class IngredientsRepository implements IIngredientsRepository {
 		const command = new QueryCommand({
 			TableName: 'WaiterAppTable',
 			ScanIndexForward: false,
-			IndexName: 'GSI1PK-GSI1SK-index',
-			KeyConditionExpression: '#GSI1PKEY = :pkey',
+			KeyConditionExpression: '#PKEY = :pkey',
 			ExpressionAttributeValues: {
 				':pkey': 'INGREDIENTS'
 			},
 			ExpressionAttributeNames: {
-				'#GSI1PKEY': 'GSI1PK'
+				'#PKEY': 'PK'
 			},
 			Limit: 100
 		});
